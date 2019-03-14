@@ -1,0 +1,9 @@
+def invia_click(self,userlog,passlog):
+        client=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client.connect(("localhost",8080))
+        cred=userlog+","+passlog
+        client.send(cred.encode())
+        risp=client.recv(1024).decode()
+        if risp=="credenziali_errate":
+            return "ok"
+        elif risp=="accesso_corretto":
