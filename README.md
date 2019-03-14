@@ -1,2 +1,1 @@
-# App
-# app per gestione cantina
+#app per gestione cantina
