@@ -5,29 +5,33 @@ s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)                             
 s.bind(("localhost", 8080))
 s.listen(5)
 while True:
-    conn_c, indrz = s.accept()
-    cred=conn_c.recv(1024).decode()                                                             #lista con [0] username 
-    log=cred.split(",")
-    print(log)
-    try:                                                                                        #e [1] password
-        mydb=mys.connect(host="192.168.5.33", user="root", passwd="quinta", database="Login")
-        myc=mydb.cursor()
-        try:                                                                                    #login
-            myc.execute("select * from Utenze where user='"+str(log[0])+"' and passwd='"+str(log[1])+"'")
-            myc.fetchall()
-            number=myc.rowcount
-            if number==1:
-                string="accesso_corretto"
-                conn_c.send(string.encode())
-                mydb.close()
-            else:
-                conn_c.send("credenziali_errate".encode())
+    try:
+        conn_c, indrz = s.accept()
+        cred=conn_c.recv(1024).decode()                                                             #lista con [0] username 
+        log=cred.split(",")
+        print(log)
+        try:                                                                                        #e [1] password
+            mydb=mys.connect(host="192.168.5.33", user="root", passwd="quinta", database="Login")
+            myc=mydb.cursor()
+            try:                                                                                    #login
+                myc.execute("select * from Utenze where user='"+str(log[0])+"' and passwd='"+str(log[1])+"'")
+                myc.fetchall()
+                number=myc.rowcount
+                if number==1:
+                    string="accesso_corretto"
+                    conn_c.send(string.encode())
+                    mydb.close()
+                else:
+                    conn_c.send("credenziali_errate".encode())
+                    mydb.close()
+            except:
+                conn_c.send("errore_login".encode())
                 mydb.close()
         except:
-            conn_c.send("errore_login".encode())
+            conn_c.send("errore_connessione".encode())
             mydb.close()
-    except:
-        conn_c.send("errore_connessione".encode())
+    except KeyboardInterrupt:
         mydb.close()
-s.close()
-print("chiuso")
+        s.close()
+        print("chiuso")
+s.close()                                                                   #close di sicurezza

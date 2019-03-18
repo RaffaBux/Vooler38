@@ -61,6 +61,7 @@ class Ui_finestra(object):
             self.fallimento.setText("errore_connessione")
         elif risp=="accesso_corretto":
             self.fallimento.setText("accesso corretto")
+        client.close()
 
 if __name__ == "__main__":
     import sys
