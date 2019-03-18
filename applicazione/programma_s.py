@@ -34,4 +34,4 @@ while True:
         mydb.close()
         s.close()
         print("chiuso")
-s.close()                                                                   #close di sicurezza
+        break
