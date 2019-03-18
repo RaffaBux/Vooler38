@@ -3,7 +3,6 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_finestra(object):
     def setupUi(self, finestra):
         finestra.setObjectName("finestra")
-        finestra.resize(392, 300)
         self.formLayoutWidget = QtWidgets.QWidget(finestra)
         self.formLayoutWidget.setGeometry(QtCore.QRect(10, 10, 371, 281))
         self.formLayoutWidget.setObjectName("formLayoutWidget")
@@ -19,7 +18,6 @@ class Ui_finestra(object):
         self.username = QtWidgets.QLineEdit(self.formLayoutWidget)
         self.username.setObjectName("username")
         self.form.setWidget(2, QtWidgets.QFormLayout.FieldRole, self.username)
-        userText=self.username.text()
         self.passwordL = QtWidgets.QLabel(self.formLayoutWidget)
         self.passwordL.setObjectName("passwordL")
         self.form.setWidget(3, QtWidgets.QFormLayout.LabelRole, self.passwordL)
@@ -55,7 +53,7 @@ class Ui_finestra(object):
         cred=userText+","+passwdText
         client.send(cred.encode())
         risp=client.recv(1024).decode()
-        if risp=="credenziali_errate" or risp=="errore_login":
+        if risp=="credenziali_errate":
             self.fallimento.setText("credenziali errate")
         elif risp=="errore_connessione":
             self.fallimento.setText("errore_connessione")
@@ -69,5 +67,5 @@ if __name__ == "__main__":
     finestra = QtWidgets.QDialog()
     ui = Ui_finestra()
     ui.setupUi(finestra)
-    finestra.show()
+    finestra.showMaximized()
     sys.exit(app.exec_())

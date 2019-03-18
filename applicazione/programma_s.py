@@ -12,26 +12,21 @@ while True:
         print(log)
         try:                                                                                        #e [1] password
             mydb=mys.connect(host="192.168.5.33", user="root", passwd="quinta", database="Login")
-            myc=mydb.cursor()
-            try:                                                                                    #login
-                myc.execute("select * from Utenze where user='"+str(log[0])+"' and passwd='"+str(log[1])+"'")
-                myc.fetchall()
-                number=myc.rowcount
-                if number==1:
-                    string="accesso_corretto"
-                    conn_c.send(string.encode())
-                    mydb.close()
-                else:
-                    conn_c.send("credenziali_errate".encode())
-                    mydb.close()
-            except:
-                conn_c.send("errore_login".encode())
+            myc=mydb.cursor()                                                                                  #login
+            myc.execute("select * from Utenze where user='"+str(log[0])+"' and passwd='"+str(log[1])+"'")
+            myc.fetchall()
+            number=myc.rowcount
+            if number==1:
+                string="accesso_corretto"
+                conn_c.send(string.encode())
+                mydb.close()
+            else:
+                conn_c.send("credenziali_errate".encode())
                 mydb.close()
         except:
             conn_c.send("errore_connessione".encode())
             mydb.close()
     except KeyboardInterrupt:
-        mydb.close()
         s.close()
         print("chiuso")
         break
