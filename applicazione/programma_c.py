@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 #Bussolotto Raffaele, 25/02/2019, v_1.0
-class Ui_finestra(object):
-    def setupUi(self, finestra):
+class clMain(object):
+    def functMain(self, finestra):
         finestra.setObjectName("finestra")
         self.formLayoutWidget = QtWidgets.QWidget(finestra)
         self.formLayoutWidget.setGeometry(QtCore.QRect(10, 10, 371, 281))
@@ -37,6 +37,10 @@ class Ui_finestra(object):
         self.retranslateUi(finestra)
         QtCore.QMetaObject.connectSlotsByName(finestra)
 
+        
+
+
+
     def retranslateUi(self, finestra):
         _translate = QtCore.QCoreApplication.translate
         finestra.setWindowTitle(_translate("finestra", "LOG-IN"))
@@ -55,25 +59,43 @@ class Ui_finestra(object):
         risp=client.recv(1024).decode()
         if risp=="credenziali_errate":
             self.fallimento.setText("credenziali errate")
+            client.close()
         elif risp=="errore_connessione":
             self.fallimento.setText("errore_connessione")
+            client.close()
         elif risp=="accesso_corretto":
             self.fallimento.setText("accesso corretto")
             client.close()
             self.refresh()
-        client.close()
+
+#prototipo refresh inizio
 
     def refresh(self):
-        prima = QtWidgets.QMainWindow()
-        cantina = w_cantina()
-        cantina.setupUi(prima)
+        ui=clCantina()
+        ui.functCantina(main)
+        app.repaint()
+
+class clCantina(object):
+    def functCantina(self, finestraC):
+        finestraC.setObjectName("CANTINA")
+        self.lineEdit = QtWidgets.QLineEdit(finestraC)
+        self.lineEdit.setGeometry(QtCore.QRect(130, 130, 113, 27))
+        self.lineEdit.setObjectName("lineEdit")
+        self.retranslateUi(finestraC)
+        QtCore.QMetaObject.connectSlotsByName(finestraC)
+
+    def retranslateUi(self, finestraC):
+        _translate = QtCore.QCoreApplication.translate
+        finestraC.setWindowTitle(_translate("CANTINA", "CANTINA"))
+        self.lineEdit.setText(_translate("CANTINA", "funziona"))
+
+#fine prototipo refresh
 
 if __name__ == "__main__":
     import sys
-    app = QtWidgets.QApplication(sys.argv)
-    main = QtWidgets.QMainWindow()
-    #finestra = QtWidgets.QDialog()
-    ui = Ui_finestra()
-    ui.setupUi(main)
+    app=QtWidgets.QApplication(sys.argv)
+    main=QtWidgets.QMainWindow()
+    ui=clMain()
+    ui.functMain(main)
     main.showMaximized()
     sys.exit(app.exec_())
