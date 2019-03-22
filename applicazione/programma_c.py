@@ -59,13 +59,21 @@ class Ui_finestra(object):
             self.fallimento.setText("errore_connessione")
         elif risp=="accesso_corretto":
             self.fallimento.setText("accesso corretto")
+            client.close()
+            self.refresh()
         client.close()
+
+    def refresh(self):
+        prima = QtWidgets.QMainWindow()
+        cantina = w_cantina()
+        cantina.setupUi(prima)
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    finestra = QtWidgets.QDialog()
+    main = QtWidgets.QMainWindow()
+    #finestra = QtWidgets.QDialog()
     ui = Ui_finestra()
-    ui.setupUi(finestra)
-    finestra.showMaximized()
+    ui.setupUi(main)
+    main.showMaximized()
     sys.exit(app.exec_())
