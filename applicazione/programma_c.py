@@ -37,9 +37,6 @@ class clMain(object):
         self.retranslateUi(finestra)
         QtCore.QMetaObject.connectSlotsByName(finestra)
 
-        
-
-
 
     def retranslateUi(self, finestra):
         _translate = QtCore.QCoreApplication.translate
@@ -97,5 +94,6 @@ if __name__ == "__main__":
     main=QtWidgets.QMainWindow()
     ui=clMain()
     ui.functMain(main)
+    
     main.showMaximized()
     sys.exit(app.exec_())
