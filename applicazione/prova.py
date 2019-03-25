@@ -1,36 +1,78 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'cantina.ui'
-#
-# Created by: PyQt5 UI code generator 5.11.3
-#
-# WARNING! All changes made in this file will be lost!
-
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-class Ui_Dialog(object):
-    def setupUi(self, Dialog):
-        Dialog.setObjectName("Dialog")
-        Dialog.resize(400, 300)
-        self.lineEdit = QtWidgets.QLineEdit(Dialog)
-        self.lineEdit.setGeometry(QtCore.QRect(130, 130, 113, 27))
-        self.lineEdit.setObjectName("lineEdit")
+class Ui_MainWindow(object):
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(600, 540)
+        self.centralwidget = QtWidgets.QWidget(MainWindow)
+        self.centralwidget.setObjectName("centralwidget")
+        self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
+        self.gridLayout.setObjectName("gridLayout")
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout.addItem(spacerItem, 1, 0, 1, 1)
+        self.passwordLabel = QtWidgets.QLabel(self.centralwidget)
+        self.passwordLabel.setObjectName("passwordLabel")
+        self.gridLayout.addWidget(self.passwordLabel, 3, 1, 1, 1)
+        spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.gridLayout.addItem(spacerItem1, 0, 2, 1, 1)
+        self.passwordLine = QtWidgets.QLineEdit(self.centralwidget)
+        self.passwordLine.setEchoMode(QtWidgets.QLineEdit.Password)
+        self.passwordLine.setObjectName("passwordLine")
+        self.gridLayout.addWidget(self.passwordLine, 3, 2, 1, 1)
+        spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout.addItem(spacerItem2, 1, 3, 1, 1)
+        self.usernameLabel = QtWidgets.QLabel(self.centralwidget)
+        self.usernameLabel.setObjectName("usernameLabel")
+        self.gridLayout.addWidget(self.usernameLabel, 1, 1, 1, 1)
+        spacerItem3 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.gridLayout.addItem(spacerItem3, 5, 1, 1, 1)
+        self.fallimentoLabel = QtWidgets.QLabel(self.centralwidget)
+        font = QtGui.QFont()
+        font.setBold(False)
+        font.setUnderline(True)
+        font.setWeight(50)
+        self.fallimentoLabel.setFont(font)
+        self.fallimentoLabel.setText("")
+        self.fallimentoLabel.setObjectName("fallimentoLabel")
+        self.gridLayout.addWidget(self.fallimentoLabel, 4, 1, 1, 2)
+        self.inviaButton = QtWidgets.QPushButton(self.centralwidget)
+        self.inviaButton.setObjectName("inviaButton")
+        self.inviaButton.clicked.connect(lambda: self.invia_click(self.fallimentoLabel))
+        self.gridLayout.addWidget(self.inviaButton, 6, 1, 1, 2)
+        self.usernameLine = QtWidgets.QLineEdit(self.centralwidget)
+        self.usernameLine.setObjectName("usernameLine")
+        self.gridLayout.addWidget(self.usernameLine, 1, 2, 1, 1)
+        spacerItem4 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout.addItem(spacerItem4, 3, 3, 1, 1)
+        spacerItem5 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout.addItem(spacerItem5, 3, 0, 1, 1)
+        spacerItem6 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.gridLayout.addItem(spacerItem6, 7, 1, 1, 1)
+        MainWindow.setCentralWidget(self.centralwidget)
+        self.menubar = QtWidgets.QMenuBar(MainWindow)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 600, 25))
+        self.menubar.setObjectName("menubar")
+        MainWindow.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(MainWindow)
+        self.statusbar.setObjectName("statusbar")
+        MainWindow.setStatusBar(self.statusbar)
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-        self.retranslateUi(Dialog)
-        QtCore.QMetaObject.connectSlotsByName(Dialog)
-
-    def retranslateUi(self, Dialog):
+    def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
-        self.lineEdit.setText(_translate("Dialog", "funziona"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "LOGIN"))
+        self.passwordLabel.setText(_translate("MainWindow", "password:"))
+        self.usernameLabel.setText(_translate("MainWindow", "username:"))
+        self.inviaButton.setText(_translate("MainWindow", "INVIA"))
 
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    Dialog = QtWidgets.QDialog()
-    ui = Ui_Dialog()
-    ui.setupUi(Dialog)
-    Dialog.show()
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.showMaximized()
     sys.exit(app.exec_())
 
