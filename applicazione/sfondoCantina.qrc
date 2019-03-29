@@ -1,5 +1,9 @@
 <RCC>
   <qresource prefix="sfondo">
-    <file>Planimetria_Botti_26.03.2019.png</file>
+    <file>1_Planimetria_Botti.png</file>
+    <file>2_Planimetria_Botti.jpg</file>
+    <file>2_grappoloicon.png</file>
+    <file>1_grappoloicon.png</file>
+    <file>3_Planimetria_Botti.png</file>
   </qresource>
 </RCC>
