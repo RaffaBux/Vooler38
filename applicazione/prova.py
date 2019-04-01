@@ -9,7 +9,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Ui_Cantina(object):
-    def setupUi(self, Cantina):
+    def funcCantina(self, Cantina):
         Cantina.setObjectName("Cantina")
         Cantina.setWindowModality(QtCore.Qt.WindowModal)
         Cantina.setEnabled(True)
@@ -218,6 +218,6 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     Cantina = QtWidgets.QMainWindow()
     ui = Ui_Cantina()
-    ui.setupUi(Cantina)
+    ui.funcCantina(Cantina)
     Cantina.show()
     sys.exit(app.exec_())

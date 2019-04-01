@@ -28,5 +28,5 @@ while True:
             mydb.close()
     except KeyboardInterrupt:
         s.close()
-        print("chiuso")
+        print("server chiuso")
         break
