@@ -4,6 +4,9 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(600, 540)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("2_icon38.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        MainWindow.setWindowIcon(icon)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
@@ -86,8 +89,6 @@ class Ui_MainWindow(object):
             client.close()
             self.refresh(MainWindow)
 
-#prototipo refresh inizio
-
     def refresh(self, MainWindow):
         ui=Ui_Cantina()
         ui.functCantina(MainWindow)
@@ -102,7 +103,8 @@ class Ui_Cantina(object):
         font.setStyleStrategy(QtGui.QFont.PreferAntialias)
         Cantina.setFont(font)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("2_grappoloicon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap("2_icon38.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        Cantina.setWindowIcon(icon)
         Cantina.setWindowIcon(icon)
         Cantina.setAutoFillBackground(True)
         Cantina.setStyleSheet("")
@@ -148,6 +150,8 @@ class Ui_Cantina(object):
         self.gridLayout.addWidget(self.locale2, 9, 0, 1, 1)
         self.vv14 = QtWidgets.QPushButton(self.lista)
         self.vv14.setObjectName("vv14")
+        sb=str(self.vv14.objectName)
+        self.vv14.clicked.connect(lambda: self.functemp(sb))
         self.gridLayout.addWidget(self.vv14, 1, 0, 1, 1)
         self.vv22 = QtWidgets.QPushButton(self.lista)
         self.vv22.setObjectName("vv22")
@@ -255,7 +259,6 @@ class Ui_Cantina(object):
         self.statusbar.setSizeGripEnabled(True)
         self.statusbar.setObjectName("statusbar")
         Cantina.setStatusBar(self.statusbar)
-
         self.retranslateUi(Cantina)
         QtCore.QMetaObject.connectSlotsByName(Cantina)
 
@@ -297,7 +300,8 @@ class Ui_Cantina(object):
         self.locale1.setText(_translate("Cantina", "LOCALE 1"))
         self.vv9.setText(_translate("Cantina", "v.v. 9"))
 
-#fine prototipo refresh
+    def functemp(self, sb):
+        print(sb)
 
 if __name__ == "__main__":
     import sys
