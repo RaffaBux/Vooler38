@@ -67,23 +67,24 @@ class Ui_MainGUI(object):
         self.inviaButton.setText(_translate("MainGUI", "INVIA"))
 
     def invia_click(self,fallimento):
+        global userText, passwdText
         import socket
-        client=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client.connect(("localhost",8080))                                      #credenziali mutevoli
+        client0=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client0.connect(("localhost",8080))                                      #credenziali mutevoli
         userText=self.usernameLine.text()
         passwdText=self.passwordLine.text()
-        cred=userText+","+passwdText
-        client.send(cred.encode())
-        risp=client.recv(1024).decode()
+        cred=userText+","+passwdText+",0"
+        client0.send(cred.encode())
+        risp=client0.recv(1024).decode()
         if risp=="credenziali_errate":
             self.fallimentoLabel.setText("credenziali errate")
-            client.close()
-        elif risp=="errore_connessione" or risp=="":
+            client0.close()
+        elif risp=="errore_connessione":
             self.fallimentoLabel.setText("errore_connessione")
-            client.close()
+            client0.close()
         elif risp=="accesso_corretto":
             self.fallimentoLabel.setText("accesso corretto")
-            client.close()
+            client0.close()
             ui=Ui_CantinaGUI()
             ui.setupUi(MainGUI)
 
@@ -334,6 +335,26 @@ class Ui_CantinaGUI(QtWidgets.QMainWindow):
         self.locale1.setText(_translate("CantinaGUI", "LOCALE 1"))
         self.vv9.setText(_translate("CantinaGUI", "v.v. 9"))
         self.tempestLabel.setText(_translate("CantinaGUI", "Temperatura esterna: *****°C"))
+        from threading import Thread
+        tempest=Thread(target=self.tempesterna, args=[self.tempestLabel], daemon=True)    #aggiornamento temperatura
+        tempest.start()                                                         #esterna
+
+    def tempesterna(self, tempestLabel):
+        import time
+        import socket
+        cred=userText+","+passwdText+",1"
+        while True:
+            try:
+                client1=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                client1.connect(("localhost",8080))                                      #credenziali mutevoli 
+                client1.send(cred.encode())
+                while True:
+                    risp=client1.recv(1024).decode()
+                    self.tempestLabel.setText("Temperatura esterna: "+str(risp)+"°C")
+                    time.sleep(30)
+            except:
+                client1.close()
+                time.sleep(1)
 
     def functemp(self):
         obj=self.sender()
@@ -427,14 +448,33 @@ class Ui_TempGUI(object):
         self.statoLabel.setText(_translate("TempGUI", "<html><head/><body><p><img src=\"gray.png\"/></p></body></html>"))
         self.tempAttLabel2.setText(_translate("TempGUI", "Temperatura "+xxx+":"))
         self.tempAttLabel1.setText(_translate("TempGUI", "---"))
+        from threading import Thread
+        tempvin=Thread(target=self.tempvaso, args=[self.tempAttLabel1, xxx], daemon=True)
+        tempvin.start()
         self.celsiusLabel1.setText(_translate("TempGUI", "°C"))
         self.celsiusLabel2.setText(_translate("TempGUI", "°C"))
         self.confermaButton.setText(_translate("TempGUI", "Conferma"))
         self.resetButton.setText(_translate("TempGUI", "Reset"))
 
+    def tempvaso(self, tempAttLabel1, xxx):
+        import time
+        import socket
+        cred=userText+","+passwdText+",2,"+xxx
+        while True:
+            try:
+                client2=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                client2.connect(("localhost",8080))                                      #credenziali mutevoli 
+                client2.send(cred.encode())
+                while True:
+                    risp=client2.recv(1024).decode()
+                    self.tempAttLabel1.setText(str(risp))
+                    time.sleep(30)
+            except:
+                client2.close()
+                time.sleep(1)
+
     def setDef(self, tempSpin):
-        
-        print("aaa")
+        print("bbb")
 
 if __name__ == "__main__":
     import sys
