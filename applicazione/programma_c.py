@@ -340,7 +340,7 @@ class Ui_CantinaGUI(QtWidgets.QMainWindow):
         tempest.start()                                                         #esterna
 
     def tempesterna(self, tempestLabel):
-        import time
+        import time as a
         import socket
         cred=userText+","+passwdText+",1"
         while True:
@@ -351,10 +351,10 @@ class Ui_CantinaGUI(QtWidgets.QMainWindow):
                 while True:
                     risp=client1.recv(1024).decode()
                     self.tempestLabel.setText("Temperatura esterna: "+str(risp)+"°C")
-                    time.sleep(30)
+                    a.sleep(30)
             except:
                 client1.close()
-                time.sleep(1)
+                a.sleep(1)
 
     def functemp(self):
         obj=self.sender()
@@ -435,43 +435,45 @@ class Ui_TempGUI(object):
 
     def retranslateUi(self, TempGUI, name):
         if name[0]=="l":
-            xxx="'Locale "+name[6]+"'"
+            xxx="Locale "+name[6]
         else:
             try:
-                xxx="'Vaso vinario "+name[2]+name[3]+"'"
+                xxx="Vaso vinario "+name[2]+name[3]
             except:
-                xxx="'Vaso vinario "+name[2]+"'"
+                xxx="Vaso vinario "+name[2]
         _translate = QtCore.QCoreApplication.translate
-        TempGUI.setWindowTitle(_translate("TempGUI", xxx))
+        TempGUI.setWindowTitle(_translate("TempGUI", "'"+xxx+"'"))
         self.monitoraggioButton.setText(_translate("TempGUI", "Monitoraggio"))
         self.tempModLabel.setText(_translate("TempGUI", "Temperatura modificabile: "))
         self.statoLabel.setText(_translate("TempGUI", "<html><head/><body><p><img src=\"gray.png\"/></p></body></html>"))
-        self.tempAttLabel2.setText(_translate("TempGUI", "Temperatura "+xxx+":"))
+        self.tempAttLabel2.setText(_translate("TempGUI", "Temperatura '"+xxx+"':"))
         self.tempAttLabel1.setText(_translate("TempGUI", "---"))
         from threading import Thread
-        tempvin=Thread(target=self.tempvaso, args=[self.tempAttLabel1, xxx], daemon=True)
+        tempvin=Thread(target=self.tempRich, args=[self.tempAttLabel1, xxx], daemon=True)
         tempvin.start()
         self.celsiusLabel1.setText(_translate("TempGUI", "°C"))
         self.celsiusLabel2.setText(_translate("TempGUI", "°C"))
         self.confermaButton.setText(_translate("TempGUI", "Conferma"))
         self.resetButton.setText(_translate("TempGUI", "Reset"))
 
-    def tempvaso(self, tempAttLabel1, xxx):
-        import time
+    def tempRich(self, tempAttLabel1, xxx):
+        import time as b
         import socket
-        cred=userText+","+passwdText+",2,"+xxx
-        while True:
-            try:
-                client2=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                client2.connect(("localhost",8080))                                      #credenziali mutevoli 
-                client2.send(cred.encode())
-                while True:
-                    risp=client2.recv(1024).decode()
-                    self.tempAttLabel1.setText(str(risp))
-                    time.sleep(30)
-            except:
-                client2.close()
-                time.sleep(1)
+        cod=userText+","+passwdText+",2,"+xxx
+        try:
+            client2=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            client2.connect(("localhost",8080))                                      #credenziali mutevoli 
+            client2.send(cod.encode())
+            while True:
+                risp=client2.recv(1024).decode()
+                self.tempAttLabel1.setText(str(risp))
+                b.sleep(30)
+            client2.close()                             #close di sicurezza che non si sa mai
+        except RuntimeError:
+            return None
+        except:
+            client2.close()
+
 
     def setDef(self, tempSpin):
         print("bbb")
