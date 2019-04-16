@@ -42,7 +42,7 @@ class Ui_MainGUI(object):
         font.setKerning(False)
         self.inviaButton.setFont(font)
         self.inviaButton.setObjectName("inviaButton")
-        self.inviaButton.clicked.connect(lambda: self.invia_click(self.fallimentoLabel))
+        self.inviaButton.clicked.connect(lambda: self.invia(self.fallimentoLabel))
         self.gridLayout.addWidget(self.inviaButton, 6, 1, 1, 2)
         self.usernameLine = QtWidgets.QLineEdit(self.main_grid)
         self.usernameLine.setObjectName("usernameLine")
@@ -66,27 +66,31 @@ class Ui_MainGUI(object):
         self.usernameLabel.setText(_translate("MainGUI", "username:"))
         self.inviaButton.setText(_translate("MainGUI", "INVIA"))
 
-    def invia_click(self,fallimento):
+    def invia(self,fallimento):
         global userText, passwdText
         import socket
         client0=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client0.connect(("localhost",8080))                                      #credenziali mutevoli
+        client0.connect(("localhost",8080)) #indirizzo server
         userText=self.usernameLine.text()
         passwdText=self.passwordLine.text()
         cred=userText+","+passwdText+",0"
         client0.send(cred.encode())
-        risp=client0.recv(1024).decode()
-        if risp=="credenziali_errate":
-            self.fallimentoLabel.setText("credenziali errate")
+        try:
+            risp=client0.recv(1024).decode()
+            if risp=="credenziali_errate":
+                self.fallimentoLabel.setText("credenziali errate")
+                client0.close()
+            elif risp=="errore_connessione":
+                self.fallimentoLabel.setText("errore connessione")
+                client0.close()
+            elif risp=="accesso_corretto":
+                self.fallimentoLabel.setText("accesso corretto")
+                client0.close()
+                ui=Ui_CantinaGUI()
+                ui.setupUi(MainGUI)
+        except:
+            self.fallimentoLabel.setText("errore connessione")
             client0.close()
-        elif risp=="errore_connessione":
-            self.fallimentoLabel.setText("errore_connessione")
-            client0.close()
-        elif risp=="accesso_corretto":
-            self.fallimentoLabel.setText("accesso corretto")
-            client0.close()
-            ui=Ui_CantinaGUI()
-            ui.setupUi(MainGUI)
 
 class Ui_CantinaGUI(QtWidgets.QMainWindow):
     def setupUi(self, CantinaGUI):
@@ -291,11 +295,15 @@ class Ui_CantinaGUI(QtWidgets.QMainWindow):
 
     def ora(self):
         import datetime
-        import time
+        import time as c
         while True:
-            tempo=datetime.datetime.now()
-            self.dataoraTimeEdit.setDateTime(QtCore.QDateTime(QtCore.QDate(tempo.year, tempo.month, tempo.day), QtCore.QTime(tempo.hour, tempo.minute, tempo.second)))
-            time.sleep(1)
+            try:
+                tempo=datetime.datetime.now()
+                self.dataoraTimeEdit.setDateTime(QtCore.QDateTime(QtCore.QDate(tempo.year, tempo.month, tempo.day), QtCore.QTime(tempo.hour, tempo.minute, tempo.second)))
+                c.sleep(1)
+            except:
+                self.dataoraTimeEdit.setDateTime(QtCore.QDateTime(QtCore.QDate('**', '**', '**'), QtCore.QTime('**', '**', '**')))
+                c.sleep(1)
         
     def retranslateUi(self, CantinaGUI):
         _translate = QtCore.QCoreApplication.translate
@@ -336,8 +344,8 @@ class Ui_CantinaGUI(QtWidgets.QMainWindow):
         self.vv9.setText(_translate("CantinaGUI", "v.v. 9"))
         self.tempestLabel.setText(_translate("CantinaGUI", "Temperatura esterna: *****°C"))
         from threading import Thread
-        tempest=Thread(target=self.tempesterna, args=[self.tempestLabel], daemon=True)    #aggiornamento temperatura
-        tempest.start()                                                         #esterna
+        tempest=Thread(target=self.tempesterna, args=[self.tempestLabel], daemon=True)    #temperatura esterna aggiornata
+        tempest.start()
 
     def tempesterna(self, tempestLabel):
         import time as a
@@ -346,22 +354,29 @@ class Ui_CantinaGUI(QtWidgets.QMainWindow):
         while True:
             try:
                 client1=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                client1.connect(("localhost",8080))                                      #credenziali mutevoli 
+                client1.connect(("localhost",8080)) #indirizzo server 
                 client1.send(cred.encode())
-                while True:
-                    risp=client1.recv(1024).decode()
-                    self.tempestLabel.setText("Temperatura esterna: "+str(risp)+"°C")
-                    a.sleep(30)
-            except:
+                risp=client1.recv(1024).decode()
+                self.tempestLabel.setText("Temperatura esterna: "+str(risp)+"°C")
                 client1.close()
-                a.sleep(1)
+                a.sleep(30)
+            except:
+                self.tempestLabel.setText("Temperatura esterna: ---°C")
+                client1.close()
+                a.sleep(60)
 
     def functemp(self):
-        obj=self.sender()
-        xxx=obj.objectName()
+        sendr=self.sender().objectName()
+        if sendr[0]=="l":
+            sendr="Locale "+sendr[6]
+        else:
+            try:
+                sendr="Vaso vinario "+sendr[2]+sendr[3]
+            except:
+                sendr="Vaso vinario "+sendr[2]
         self.tempwin=QtWidgets.QMainWindow()
         self.ui=Ui_TempGUI()
-        self.ui.setupUi(self.tempwin, xxx)
+        self.ui.setupUi(self.tempwin, sendr)
         self.tempwin.show()
 
 class Ui_TempGUI(object):
@@ -434,22 +449,15 @@ class Ui_TempGUI(object):
         QtCore.QMetaObject.connectSlotsByName(TempGUI)
 
     def retranslateUi(self, TempGUI, name):
-        if name[0]=="l":
-            xxx="Locale "+name[6]
-        else:
-            try:
-                xxx="Vaso vinario "+name[2]+name[3]
-            except:
-                xxx="Vaso vinario "+name[2]
         _translate = QtCore.QCoreApplication.translate
-        TempGUI.setWindowTitle(_translate("TempGUI", "'"+xxx+"'"))
+        TempGUI.setWindowTitle(_translate("TempGUI", "'"+name+"'"))
         self.monitoraggioButton.setText(_translate("TempGUI", "Monitoraggio"))
         self.tempModLabel.setText(_translate("TempGUI", "Temperatura modificabile: "))
         self.statoLabel.setText(_translate("TempGUI", "<html><head/><body><p><img src=\"gray.png\"/></p></body></html>"))
-        self.tempAttLabel2.setText(_translate("TempGUI", "Temperatura '"+xxx+"':"))
+        self.tempAttLabel2.setText(_translate("TempGUI", "Temperatura '"+name+"':"))
         self.tempAttLabel1.setText(_translate("TempGUI", "---"))
         from threading import Thread
-        tempvin=Thread(target=self.tempRich, args=[self.tempAttLabel1, xxx], daemon=True)
+        tempvin=Thread(target=self.tempRich, args=[self.tempAttLabel1, name], daemon=True)
         tempvin.start()
         self.celsiusLabel1.setText(_translate("TempGUI", "°C"))
         self.celsiusLabel2.setText(_translate("TempGUI", "°C"))
@@ -460,20 +468,21 @@ class Ui_TempGUI(object):
         import time as b
         import socket
         cod=userText+","+passwdText+",2,"+xxx
-        try:
-            client2=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            client2.connect(("localhost",8080))                                      #credenziali mutevoli 
-            client2.send(cod.encode())
-            while True:
+        while True:
+            try:
+                client2=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                client2.connect(("localhost",8080))                                      #credenziali mutevoli 
+                client2.send(cod.encode())
                 risp=client2.recv(1024).decode()
                 self.tempAttLabel1.setText(str(risp))
-                b.sleep(30)
-            client2.close()                             #close di sicurezza che non si sa mai
-        except RuntimeError:
-            return None
-        except:
-            client2.close()
-
+                client2.close()
+                b.sleep(20)
+            except RuntimeError:
+                self.tempAttLabel1.setText("---")
+                return None
+            except:
+                client2.close()
+                self.tempAttLabel1.setText("---")
 
     def setDef(self, tempSpin):
         print("bbb")
