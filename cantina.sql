@@ -25,8 +25,8 @@ DROP TABLE IF EXISTS `Botte`;
 CREATE TABLE `Botte` (
   `idBotte` int(11) NOT NULL,
   `contenuto` varchar(20) NOT NULL,
-  `tempBotte` double DEFAULT NULL,
-  `tempsetBotte` double DEFAULT NULL,
+  `tempBotte` double NOT NULL,
+  `tempsetBotte` double NOT NULL,
   `idLocale` int(11) NOT NULL,
   PRIMARY KEY (`idBotte`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -50,8 +50,8 @@ DROP TABLE IF EXISTS `Locale`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Locale` (
   `idLocale` int(11) NOT NULL AUTO_INCREMENT,
-  `tempLocale` double DEFAULT NULL,
-  `tempsetLocale` double DEFAULT NULL,
+  `tempLocale` double NOT NULL,
+  `tempsetLocale` double NOT NULL,
   PRIMARY KEY (`idLocale`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -75,7 +75,7 @@ DROP TABLE IF EXISTS `StoricoBotte`;
 CREATE TABLE `StoricoBotte` (
   `idStoricoBotte` int(11) NOT NULL AUTO_INCREMENT,
   `dataAggB` date NOT NULL,
-  `contenutoAggB` varchar(20) DEFAULT NULL,
+  `contenutoAggB` varchar(20) NOT NULL,
   `tempAggB` double NOT NULL,
   `idBotte` int(11) NOT NULL,
   PRIMARY KEY (`idStoricoBotte`)

@@ -360,8 +360,10 @@ class Ui_CantinaGUI(QtWidgets.QMainWindow):
                 self.tempestLabel.setText("Temperatura esterna: "+str(risp)+"°C")
                 client1.close()
                 a.sleep(30)
+            except RuntimeError:
+                pass
             except:
-                self.tempestLabel.setText("Temperatura esterna: ---°C")
+                self.tempestLabel.setText("Temperatura esterna: *****°C")
                 client1.close()
                 a.sleep(60)
 
@@ -478,11 +480,10 @@ class Ui_TempGUI(object):
                 client2.close()
                 b.sleep(20)
             except RuntimeError:
-                self.tempAttLabel1.setText("---")
-                return None
+                pass
             except:
+                self.tempAttLabel1.setText("*****")
                 client2.close()
-                self.tempAttLabel1.setText("---")
 
     def setDef(self, tempSpin):
         print("bbb")

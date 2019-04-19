@@ -12,23 +12,23 @@ while True:
         if int(cod[2])==0:
             print(cod)
             try:
-                mydb0=mys.connect(host="192.168.5.33", user="root", passwd="quinta", database="Login")  #credenziali mysql
+                mydb0=mys.connect(host="localhost", user="vinaiolo", passwd="cantina00", database="Login")  #credenziali mysql
                 myc0=mydb0.cursor()
-                myc0.execute("select * from Utenze where user='"+str(cod[0])+"' and passwd='"+str(cod[1])+"'")
-                myc0.fetchall()
-                nrows=myc0.rowcount
-                if nrows==1:
+                myc0.execute("select username,password from Utente where username='"+str(cod[0])+"' and password='"+str(cod[1])+"'")
+                record=myc0.fetchone()
+                if record[0]==str(cod[0]) and record[1]==str(cod[1]):
                     connClient.send("accesso_corretto".encode())
                 else:
                     connClient.send("credenziali_errate".encode())
                 mydb0.close()
-            except:
+            except Exception as e:
+                print(e)
                 connClient.send("errore_connessione".encode())
                 mydb0.close()
         elif int(cod[2])==1:
             print(cod)
             try:
-                mydb1=mys.connect(host="192.168.5.33", user="root", passwd="quinta", database="Esterno")   #dopo da sostituire con le credenziali
+                mydb1=mys.connect(host="localhost", user="vinaiolo", passwd="cantina00", database="Esterno")   #credenziali mysql
                 myc1=mydb1.cursor()
                 myc1.execute("select tempEsterno from Esterno where idEsterno=1")
                 record=myc1.fetchone()
@@ -36,20 +36,20 @@ while True:
             except BrokenPipeError:
                 mydb1.close()
             except:
-                connClient.send("---".encode())
+                connClient.send("*****".encode())
                 mydb1.close()
         elif int(cod[2])==2:
             print(cod)
             cod=str(cod[3]).split(" ")
             try:
-                mydb2=mys.connect(host="192.168.5.33", user="root", passwd="quinta", database="Cantina")
+                mydb2=mys.connect(host="localhost", user="vinaiolo", passwd="cantina", database="Cantina") #credenziali mysql
                 myc2=mydb2.cursor()
                 if cod[0]=="Vaso":
                     myc2.execute("select tempBotte from Botte where idBotte="+str(cod[3]))
                     record=myc2.fetchone()
                     connClient.send(str(record[0]).encode())
                 else:
-                    myc2.execute("select tempLocale from Locale where idEsterno="+str(cod[2]))
+                    myc2.execute("select tempLocale from Locale where idLocale="+str(cod[2]))
                     record=myc2.fetchone()
                     connClient.send(str(record[0]).encode())
             except BrokenPipeError:
