@@ -394,28 +394,28 @@ class Ui_TempGUI(object):
         self.gridLayout_2.setObjectName("gridLayout_2")
         self.monitoraggioButton = QtWidgets.QPushButton(self.temp_grid)
         self.monitoraggioButton.setObjectName("monitoraggioButton")
-        self.gridLayout_2.addWidget(self.monitoraggioButton, 6, 0, 1, 1)
+        self.gridLayout_2.addWidget(self.monitoraggioButton, 7, 0, 1, 1)
         self.tempModLabel = QtWidgets.QLabel(self.temp_grid)
         self.tempModLabel.setObjectName("tempModLabel")
-        self.gridLayout_2.addWidget(self.tempModLabel, 2, 0, 1, 1)
+        self.gridLayout_2.addWidget(self.tempModLabel, 3, 0, 1, 1)
         self.statoLabel = QtWidgets.QLabel(self.temp_grid)
         self.statoLabel.setObjectName("statoLabel")
-        self.gridLayout_2.addWidget(self.statoLabel, 6, 2, 1, 1)
+        self.gridLayout_2.addWidget(self.statoLabel, 7, 2, 1, 1)
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout_2.addItem(spacerItem, 6, 1, 1, 1)
+        self.gridLayout_2.addItem(spacerItem, 7, 1, 1, 1)
         self.tempAttLabel2 = QtWidgets.QLabel(self.temp_grid)
         self.tempAttLabel2.setObjectName("tempAttLabel2")
-        self.gridLayout_2.addWidget(self.tempAttLabel2, 1, 0, 1, 1)
+        self.gridLayout_2.addWidget(self.tempAttLabel2, 2, 0, 1, 1)
         self.tempAttLabel1 = QtWidgets.QLabel(self.temp_grid)
         self.tempAttLabel1.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.tempAttLabel1.setObjectName("tempAttLabel1")
-        self.gridLayout_2.addWidget(self.tempAttLabel1, 1, 1, 1, 1)
+        self.gridLayout_2.addWidget(self.tempAttLabel1, 2, 1, 1, 1)
         self.celsiusLabel1 = QtWidgets.QLabel(self.temp_grid)
         self.celsiusLabel1.setObjectName("celsiusLabel1")
-        self.gridLayout_2.addWidget(self.celsiusLabel1, 1, 2, 1, 1)
+        self.gridLayout_2.addWidget(self.celsiusLabel1, 2, 2, 1, 1)
         self.celsiusLabel2 = QtWidgets.QLabel(self.temp_grid)
         self.celsiusLabel2.setObjectName("celsiusLabel2")
-        self.gridLayout_2.addWidget(self.celsiusLabel2, 2, 2, 1, 1)
+        self.gridLayout_2.addWidget(self.celsiusLabel2, 3, 2, 1, 1)
         spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.gridLayout_2.addItem(spacerItem1, 0, 0, 1, 1)
         self.tempSpin = QtWidgets.QDoubleSpinBox(self.temp_grid)
@@ -431,9 +431,9 @@ class Ui_TempGUI(object):
         self.tempSpin.setMinimum(5.0)
         self.tempSpin.setMaximum(25.0)
         self.tempSpin.setSingleStep(0.1)
-        self.tempSpin.setProperty("value", 16.0)        #installare db e cambiare valore spin
+        self.tempSpin.setProperty("value", 16.0)
         self.tempSpin.setObjectName("tempSpin")
-        self.gridLayout_2.addWidget(self.tempSpin, 2, 1, 1, 1)
+        self.gridLayout_2.addWidget(self.tempSpin, 3, 1, 1, 1)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.confermaButton = QtWidgets.QPushButton(self.temp_grid)
@@ -443,9 +443,18 @@ class Ui_TempGUI(object):
         self.resetButton.setObjectName("resetButton")
         self.resetButton.clicked.connect(lambda: self.setDef(self.tempSpin))
         self.horizontalLayout.addWidget(self.resetButton)
-        self.gridLayout_2.addLayout(self.horizontalLayout, 3, 1, 2, 1)
+        self.gridLayout_2.addLayout(self.horizontalLayout, 4, 1, 2, 1)
         spacerItem2 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.gridLayout_2.addItem(spacerItem2, 5, 1, 1, 1)
+        self.gridLayout_2.addItem(spacerItem2, 6, 1, 1, 1)
+        if name[0]=="V":
+                self.contenutoLabel1 = QtWidgets.QLabel(self.temp_grid)
+                self.contenutoLabel1.setObjectName("contenutoLabel1")
+                self.gridLayout_2.addWidget(self.contenutoLabel1, 1, 0, 1, 1)
+                self.contenutoLabel2 = QtWidgets.QLabel(self.temp_grid)
+                self.contenutoLabel2.setText("")
+                self.contenutoLabel2.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+                self.contenutoLabel2.setObjectName("contenutoLabel2")
+                self.gridLayout_2.addWidget(self.contenutoLabel2, 1, 1, 1, 1)
         TempGUI.setCentralWidget(self.temp_grid)
         self.retranslateUi(TempGUI, name)
         QtCore.QMetaObject.connectSlotsByName(TempGUI)
@@ -457,7 +466,7 @@ class Ui_TempGUI(object):
         self.tempModLabel.setText(_translate("TempGUI", "Temperatura modificabile: "))
         self.statoLabel.setText(_translate("TempGUI", "<html><head/><body><p><img src=\"gray.png\"/></p></body></html>"))
         self.tempAttLabel2.setText(_translate("TempGUI", "Temperatura '"+name+"':"))
-        self.tempAttLabel1.setText(_translate("TempGUI", "---"))
+        self.tempAttLabel1.setText(_translate("TempGUI", "*****"))
         from threading import Thread
         tempvin=Thread(target=self.tempRich, args=[self.tempAttLabel1, name], daemon=True)
         tempvin.start()
@@ -465,6 +474,11 @@ class Ui_TempGUI(object):
         self.celsiusLabel2.setText(_translate("TempGUI", "°C"))
         self.confermaButton.setText(_translate("TempGUI", "Conferma"))
         self.resetButton.setText(_translate("TempGUI", "Reset"))
+        if name[0]=="V":
+            self.contenutoLabel1.setText(_translate("TempGUI", "Contenuto '"+name+"':"))
+            self.contenutoLabel2.setText(_translate("TempGUI", "*****"))
+            contenuto=Thread(target=self.contVaso, args=[self.contenutoLabel2, name], daemon=True)
+            contenuto.start()
 
     def tempRich(self, tempAttLabel1, xxx):
         import time as b
@@ -473,17 +487,36 @@ class Ui_TempGUI(object):
         while True:
             try:
                 client2=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                client2.connect(("localhost",8080))                                      #credenziali mutevoli 
+                client2.connect(("localhost",8080)) #!!!!!!
                 client2.send(cod.encode())
                 risp=client2.recv(1024).decode()
                 self.tempAttLabel1.setText(str(risp))
                 client2.close()
-                b.sleep(20)
             except RuntimeError:
                 pass
             except:
                 self.tempAttLabel1.setText("*****")
                 client2.close()
+            b.sleep(20)
+        
+    def contVaso(self, contenutoLabel2, xxx):
+        import time as c
+        import socket
+        cod=userText+","+passwdText+",3,"+xxx
+        while True:
+            try:
+                client3=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                client3.connect(("localhost",8080)) #!!!!!!
+                client3.send(cod.encode())
+                risp=client3.recv(1024).decode()
+                self.contenutoLabel2.setText(str(risp))
+                client3.close()
+            except RuntimeError:
+                pass
+            except:
+                self.contenutoLabel2.setText("*****")
+                client3.close()
+            c.sleep(10)
 
     def setDef(self, tempSpin):
         print("bbb")

@@ -1,18 +1,2 @@
-pyuic5 -x x.ui -o prova.py
-
-#create a QDateTimeEdit object
-myDTE = QtGui.QDateTimeEdit()
-
-#get current date and time
-now = QtCore.QDateTime.currentDateTime()
-
-#set current date and time to the object
-myDTE.setDateTime(now)
-
-#set date only
-today = QtCore.QDate.currentDate()
-myDTE.setDate(today)
-
-#set time only
-this_moment = QtCore.QTime.currentTime()
-myDTE.setTime(this_moment)
+ubuntu: pyuic5 -x ***.ui -o prova.py
+raspbian: exec python3 -m PyQt5.uic.pyuic ***.ui -o prova.py -x
