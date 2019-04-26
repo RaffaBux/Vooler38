@@ -70,7 +70,7 @@ class Ui_MainGUI(object):
         global userText, passwdText
         import socket
         client0=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client0.connect(("localhost",8080)) #indirizzo server
+        client0.connect(("localhost",9797)) #indirizzo server
         userText=self.usernameLine.text()
         passwdText=self.passwordLine.text()
         cred=userText+","+passwdText+",0"
@@ -354,7 +354,7 @@ class Ui_CantinaGUI(QtWidgets.QMainWindow):
         while True:
             try:
                 client1=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                client1.connect(("localhost",8080)) #indirizzo server 
+                client1.connect(("localhost",9797)) #indirizzo server 
                 client1.send(cred.encode())
                 risp=client1.recv(1024).decode()
                 self.tempestLabel.setText("Temperatura esterna: "+str(risp)+"°C")
@@ -432,16 +432,18 @@ class Ui_TempGUI(object):
         self.tempSpin.setMaximum(25.0)
         self.tempSpin.setSingleStep(0.1)
         self.tempSpin.setProperty("value", 16.0)
+        self.setDef(self.tempSpin, name)
         self.tempSpin.setObjectName("tempSpin")
         self.gridLayout_2.addWidget(self.tempSpin, 3, 1, 1, 1)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.confermaButton = QtWidgets.QPushButton(self.temp_grid)
         self.confermaButton.setObjectName("confermaButton")
+        self.confermaButton.clicked.connect(lambda: self.setTemp(self.tempSpin, name, self.confermaLabel))
         self.horizontalLayout.addWidget(self.confermaButton)
         self.resetButton = QtWidgets.QPushButton(self.temp_grid)
         self.resetButton.setObjectName("resetButton")
-        self.resetButton.clicked.connect(lambda: self.setDef(self.tempSpin))
+        self.resetButton.clicked.connect(lambda: self.setDef(self.tempSpin, name))
         self.horizontalLayout.addWidget(self.resetButton)
         self.gridLayout_2.addLayout(self.horizontalLayout, 4, 1, 2, 1)
         spacerItem2 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
@@ -455,6 +457,10 @@ class Ui_TempGUI(object):
                 self.contenutoLabel2.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
                 self.contenutoLabel2.setObjectName("contenutoLabel2")
                 self.gridLayout_2.addWidget(self.contenutoLabel2, 1, 1, 1, 1)
+        self.confermaLabel = QtWidgets.QLabel(self.temp_grid)
+        self.confermaLabel.setText("")
+        self.confermaLabel.setObjectName("confermaLabel")
+        self.gridLayout_2.addWidget(self.confermaLabel, 6, 1, 1, 1)
         TempGUI.setCentralWidget(self.temp_grid)
         self.retranslateUi(TempGUI, name)
         QtCore.QMetaObject.connectSlotsByName(TempGUI)
@@ -487,7 +493,7 @@ class Ui_TempGUI(object):
         while True:
             try:
                 client2=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                client2.connect(("localhost",8080)) #!!!!!!
+                client2.connect(("localhost",9797)) #!!!!!!
                 client2.send(cod.encode())
                 risp=client2.recv(1024).decode()
                 self.tempAttLabel1.setText(str(risp))
@@ -500,13 +506,13 @@ class Ui_TempGUI(object):
             b.sleep(20)
         
     def contVaso(self, contenutoLabel2, xxx):
-        import time as c
+        import time as d
         import socket
         cod=userText+","+passwdText+",3,"+xxx
         while True:
             try:
                 client3=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                client3.connect(("localhost",8080)) #!!!!!!
+                client3.connect(("localhost",9797)) #!!!!!!
                 client3.send(cod.encode())
                 risp=client3.recv(1024).decode()
                 self.contenutoLabel2.setText(str(risp))
@@ -516,10 +522,50 @@ class Ui_TempGUI(object):
             except:
                 self.contenutoLabel2.setText("*****")
                 client3.close()
-            c.sleep(10)
+            d.sleep(10)
 
-    def setDef(self, tempSpin):
-        print("bbb")
+    def setDef(self, tempSpin, name):
+        import socket
+        cod=userText+","+passwdText+",4,"+name
+        try:
+            client4=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            client4.connect(("localhost",9797)) #!!!!!!
+            client4.send(cod.encode())
+            risp=client4.recv(1024).decode()
+            self.tempSpin.setValue(float(risp))
+            client4.close()
+        except RuntimeError:
+            pass
+        except:
+            self.tempSpin.setValue(float(risp))
+            client4.close()
+    
+    def setTemp(self, tempSpin, name, confermaLabel):
+        import socket
+        valore=self.tempSpin.value()
+        cod=userText+","+passwdText+",5,"+name+","+str(valore)
+        try:
+            client5=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            client5.connect(("localhost",9797)) #!!!!!!
+            client5.send(cod.encode())
+            risp=client5.recv(1024).decode()
+            self.confermaLabel.setText(str(risp))
+            from threading import Thread
+            mexconf=Thread(target=self.mexconf, args=[self.confermaLabel], daemon=True)
+            mexconf.start()
+            client5.close()
+            self.setDef(tempSpin, name)
+        except RuntimeError:
+            pass
+        except:
+            self.confermaLabel.setText("errore aggiornamento")
+            client5.close()
+            self.setDef(tempSpin, name)
+
+    def mexconf(self, confermaLabel):
+        import time as e
+        e.sleep(10)
+        self.confermaLabel.setText("")
 
 if __name__ == "__main__":
     import sys

@@ -19,28 +19,14 @@
   </property>
   <widget class="QWidget" name="temp_grid">
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="7" column="0">
-     <widget class="QPushButton" name="monitoraggioButton">
+    <item row="2" column="0">
+     <widget class="QLabel" name="tempAttLabel2">
       <property name="text">
-       <string>Monitoraggio</string>
+       <string>Temperatura ******:</string>
       </property>
      </widget>
     </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="tempModLabel">
-      <property name="text">
-       <string>Temperatura modificabile: </string>
-      </property>
-     </widget>
-    </item>
-    <item row="7" column="2">
-     <widget class="QLabel" name="statoLabel">
-      <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/sfondo/gray.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-     </widget>
-    </item>
-    <item row="7" column="1">
+    <item row="8" column="1">
      <spacer name="space3_1">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -53,10 +39,24 @@
       </property>
      </spacer>
     </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="tempAttLabel2">
+    <item row="8" column="2">
+     <widget class="QLabel" name="statoLabel">
       <property name="text">
-       <string>Temperatura ******:</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/sfondo/gray.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="0">
+     <widget class="QPushButton" name="monitoraggioButton">
+      <property name="text">
+       <string>Monitoraggio</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="tempModLabel">
+      <property name="text">
+       <string>Temperatura modificabile: </string>
       </property>
      </widget>
     </item>
@@ -158,7 +158,7 @@
       </item>
      </layout>
     </item>
-    <item row="6" column="1">
+    <item row="7" column="1">
      <spacer name="space3_2">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
@@ -185,6 +185,13 @@
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="1">
+     <widget class="QLabel" name="confermaLabel">
+      <property name="text">
+       <string/>
       </property>
      </widget>
     </item>
