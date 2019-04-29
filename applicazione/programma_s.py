@@ -2,7 +2,7 @@
 import socket
 import mysql.connector as mys
 s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind(("localhost", 9797)) #indirizzo macchina
+s.bind(("localhost", 8080)) #indirizzo macchina
 s.listen(10)
 while True:
     try:
@@ -103,21 +103,52 @@ while True:
                 if cod[0]=="Vaso":
                     mydb5=mys.connect(host="192.168.5.33", user="root", passwd="quinta", database="Cantina") #credenziali mysql
                     myc5=mydb5.cursor()
+                    myc5.execute("select idBotte,contenuto,tempBotte,tempsetBotte from Botte where idBotte="+str(cod[2]))
+                    record=myc5.fetchone()
+                    myc5.execute("insert into StoricoBotte(dataAggB,contenutoAggB,tempAggB,tempsetAggB,idBotte)values(now(),'"+str(record[1])+"',"+str(record[2])+","+str(record[3])+","+str(record[0])+")")
                     myc5.execute("update Botte set tempsetBotte="+str(valore)+" where idBotte="+str(cod[2]))
                     mydb5.commit()
-                    connClient.send("temperatura aggiornata".encode())
                 else:
                     mydb5=mys.connect(host="192.168.5.33", user="root", passwd="quinta", database="Cantina") #credenziali mysql
                     myc5=mydb5.cursor()
+                    myc5.execute("select idLocale,tempLocale,tempsetLocale from Locale where idLocale="+str(cod[1]))
+                    record=myc5.fetchone()
+                    myc5.execute("insert into StoricoLocale(dataAggL,tempAggL,tempsetAggL,idLocale)values(now(),"+str(record[1])+","+str(record[2])+","+str(record[0])+")")
                     myc5.execute("update Locale set tempsetLocale="+str(valore)+" where idLocale="+str(cod[1]))
                     mydb5.commit()
-                    connClient.send("temperatura aggiornata".encode())
+                connClient.send("temperatura aggiornata".encode())
             except BrokenPipeError:
                 mydb5.close()
             except Exception as e:
                 print(e)
+                mydb5.rollback()
                 connClient.send("errore aggiornamento".encode())
                 mydb5.close()
+        elif int(cod[2])==6:    #grafico monitoraggio
+            print(cod)
+            misure=""
+            valore=cod[4]
+            cod=str(cod[3]).split(" ")
+            try:
+                if cod[0]=="Vaso":
+                    mydb6=mys.connect(host="192.168.5.33", user="root", passwd="quinta", database="Cantina") #credenziali mysql
+                    myc6=mydb6.cursor()
+                    myc6.execute("select tempAggB from StoricoBotte where idBotte="+str(cod[2])+" order by dataAggB desc limit 10")
+                    record=myc6.fetchall()
+                else:
+                    mydb6=mys.connect(host="192.168.5.33", user="root", passwd="quinta", database="Cantina") #credenziali mysql
+                    myc6=mydb6.cursor()
+                    myc6.execute("select tempAggL from StoricoLocale where idLocale="+str(cod[1])+" order by dataAggL desc limit 10")
+                    record=myc6.fetchall()
+                for i in record:
+                    misure=misure+record[i]+","
+                connClient.send(misure.encode())
+            except BrokenPipeError:
+                mydb6.close()
+            except Exception as e:
+                print(e)
+                connClient.send("errore invio dati".encode())
+                mydb6.close()
     except KeyboardInterrupt:
         s.close()
         print("server chiuso")

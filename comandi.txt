@@ -1,2 +1,6 @@
 ubuntu: pyuic5 -x ***.ui -o prova.py
 raspbian: exec python3 -m PyQt5.uic.pyuic ***.ui -o prova.py -x
+sudo apt-get install pip3
+pip3 install pyqt5
+pip3 install numpy
+pip3 install matplotlib

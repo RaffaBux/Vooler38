@@ -70,7 +70,7 @@ class Ui_MainGUI(object):
         global userText, passwdText
         import socket
         client0=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client0.connect(("localhost",9797)) #indirizzo server
+        client0.connect(("localhost",8080)) #indirizzo server
         userText=self.usernameLine.text()
         passwdText=self.passwordLine.text()
         cred=userText+","+passwdText+",0"
@@ -354,7 +354,7 @@ class Ui_CantinaGUI(QtWidgets.QMainWindow):
         while True:
             try:
                 client1=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                client1.connect(("localhost",9797)) #indirizzo server 
+                client1.connect(("localhost",8080)) #indirizzo server 
                 client1.send(cred.encode())
                 risp=client1.recv(1024).decode()
                 self.tempestLabel.setText("Temperatura esterna: "+str(risp)+"°C")
@@ -394,6 +394,7 @@ class Ui_TempGUI(object):
         self.gridLayout_2.setObjectName("gridLayout_2")
         self.monitoraggioButton = QtWidgets.QPushButton(self.temp_grid)
         self.monitoraggioButton.setObjectName("monitoraggioButton")
+        self.monitoraggioButton.clicked.connect(lambda: self.graficoCart(name))
         self.gridLayout_2.addWidget(self.monitoraggioButton, 7, 0, 1, 1)
         self.tempModLabel = QtWidgets.QLabel(self.temp_grid)
         self.tempModLabel.setObjectName("tempModLabel")
@@ -493,7 +494,7 @@ class Ui_TempGUI(object):
         while True:
             try:
                 client2=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                client2.connect(("localhost",9797)) #!!!!!!
+                client2.connect(("localhost",8080)) #!!!!!!
                 client2.send(cod.encode())
                 risp=client2.recv(1024).decode()
                 self.tempAttLabel1.setText(str(risp))
@@ -512,7 +513,7 @@ class Ui_TempGUI(object):
         while True:
             try:
                 client3=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                client3.connect(("localhost",9797)) #!!!!!!
+                client3.connect(("localhost",8080)) #!!!!!!
                 client3.send(cod.encode())
                 risp=client3.recv(1024).decode()
                 self.contenutoLabel2.setText(str(risp))
@@ -529,7 +530,7 @@ class Ui_TempGUI(object):
         cod=userText+","+passwdText+",4,"+name
         try:
             client4=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            client4.connect(("localhost",9797)) #!!!!!!
+            client4.connect(("localhost",8080)) #!!!!!!
             client4.send(cod.encode())
             risp=client4.recv(1024).decode()
             self.tempSpin.setValue(float(risp))
@@ -546,7 +547,7 @@ class Ui_TempGUI(object):
         cod=userText+","+passwdText+",5,"+name+","+str(valore)
         try:
             client5=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            client5.connect(("localhost",9797)) #!!!!!!
+            client5.connect(("localhost",8080)) #!!!!!!
             client5.send(cod.encode())
             risp=client5.recv(1024).decode()
             self.confermaLabel.setText(str(risp))
@@ -566,6 +567,17 @@ class Ui_TempGUI(object):
         import time as e
         e.sleep(10)
         self.confermaLabel.setText("")
+
+    def graficoCart(self, name):
+        import numpy as np 
+        import matplotlib.pyplot as plt
+        x = np.linspace(-(2*np.pi), 2*np.pi, 100) 
+        y = np.sin(x)
+        plt.plot(x, y, marker="*", color = 'red')
+        plt.title("la funzione seno")
+        plt.xlabel("X") 
+        plt.ylabel("Y")
+        plt.show()
 
 if __name__ == "__main__":
     import sys
