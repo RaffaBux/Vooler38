@@ -2,7 +2,7 @@
 import socket
 import mysql.connector as mys
 s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind(("localhost", 8080)) #indirizzo macchina
+s.bind(("localhost", 9090)) #indirizzo macchina
 s.listen(10)
 while True:
     try:
@@ -127,22 +127,46 @@ while True:
         elif int(cod[2])==6:    #grafico monitoraggio
             print(cod)
             misure=""
-            valore=cod[4]
+            quando=""
+            dati=""
             cod=str(cod[3]).split(" ")
             try:
                 if cod[0]=="Vaso":
                     mydb6=mys.connect(host="192.168.5.33", user="root", passwd="quinta", database="Cantina") #credenziali mysql
                     myc6=mydb6.cursor()
                     myc6.execute("select tempAggB from StoricoBotte where idBotte="+str(cod[2])+" order by dataAggB desc limit 10")
-                    record=myc6.fetchall()
+                    recordTemp=myc6.fetchall()
+                    myc6.execute("select dataAggB from StoricoBotte where idBotte="+str(cod[2])+" order by dataAggB desc limit 10")
+                    recordDate=myc6.fetchall()
                 else:
                     mydb6=mys.connect(host="192.168.5.33", user="root", passwd="quinta", database="Cantina") #credenziali mysql
                     myc6=mydb6.cursor()
                     myc6.execute("select tempAggL from StoricoLocale where idLocale="+str(cod[1])+" order by dataAggL desc limit 10")
-                    record=myc6.fetchall()
-                for i in record:
-                    misure=misure+record[i]+","
-                connClient.send(misure.encode())
+                    recordTemp=myc6.fetchall()
+                    myc6.execute("select dataAggL from StoricoLocale where idLocale="+str(cod[1])+" order by dataAggL desc limit 10")
+                    recordDate=myc6.fetchall()
+                c=0
+                for i in recordTemp:
+                    try:
+                        misure=misure+str(i[0])
+                        c+=1
+                        if c<len(recordTemp):
+                            misure=misure+","
+                    except:
+                        c+=1
+                        pass
+                c=0
+                for i in recordDate:
+                    try:
+                        quando=quando+str(i[0])
+                        c+=1
+                        if c<len(recordDate):
+                            quando=quando+","
+                    except:
+                        c+=1
+                        pass
+                dati=misure+";"+quando
+                connClient.send(dati.encode())
             except BrokenPipeError:
                 mydb6.close()
             except Exception as e:
