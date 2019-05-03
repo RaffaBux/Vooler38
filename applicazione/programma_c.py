@@ -430,7 +430,7 @@ class Ui_TempGUI(object):
         self.tempSpin.setPrefix("")
         self.tempSpin.setDecimals(1)
         self.tempSpin.setMinimum(5.0)
-        self.tempSpin.setMaximum(25.0)
+        self.tempSpin.setMaximum(30.0)
         self.tempSpin.setSingleStep(0.1)
         self.tempSpin.setProperty("value", 16.0)
         self.setDef(self.tempSpin, name)
@@ -574,32 +574,34 @@ class Ui_TempGUI(object):
             import socket
             import numpy as np 
             import matplotlib.pyplot as plt
-            import matplotlib.dates as dat
-            import datetime as dt
+            import matplotlib.dates as dt
+            import matplotlib.ticker as tick
+            import dateutil
             client6=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             client6.connect(("localhost",9090)) #!!!!!!
             client6.send(cod.encode())
             risp=client6.recv(1024).decode()
-            print(risp) #debug
             client6.close()
             dati=risp.split(";")
             misure=dati[0].split(",")
             quando=dati[1].split(",")
-            print(misure)
-            print(quando)
-            x = [dt.datetime.strptime(q,'%d/%m/%y').date() for q in quando]    #grafico cartesiano
-            plt.gca().xaxis.set_major_formatter(dat.DateFormatter('%d/%m/%y'))
-            plt.gca().xaxis.set_major_locator(dat.DayLocator())
-            y = misure
+            misure=misure[::-1]
+            x=[dateutil.parser.parse(q) for q in quando]
+            y=misure
+            ax=plt.gca()
+            xfmt=dt.DateFormatter('%d/%m/%y %H:%M:%S')
+            ax.xaxis.set_major_formatter(xfmt)
+            ax.set_xticks(x)
+            plt.xticks(rotation=-45)
             plt.plot(x, y, marker="*", color='red')
-            plt.gfc().autofmt_xdate()
             plt.title("Storico temperature "+name)
             plt.xlabel("Data misurazione") 
             plt.ylabel("Temperatura")
             plt.show()
         except RuntimeError:
             pass
-        except:
+        except Exception as e:
+            print(e)
             self.confermaLabel.setText("errore generazione grafico")
             client6.close()
 
