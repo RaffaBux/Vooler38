@@ -124,7 +124,7 @@ while True:
                 mydb5.rollback()
                 connClient.send("errore aggiornamento".encode())
                 mydb5.close()
-        elif int(cod[2])==6:    #grafico monitoraggio
+        elif int(cod[2])==6:    #grafico monitoraggio temperature
             print(cod)
             misure=""
             quando=""
@@ -173,6 +173,46 @@ while True:
                 print(e)
                 connClient.send("errore invio dati".encode())
                 mydb6.close()
+        elif int(cod[2])==7:    #grafico monitoraggio quantità
+            print(cod)
+            misure=""
+            quando=""
+            dati=""
+            cod=str(cod[3]).split(" ")
+            try:
+                mydb7=mys.connect(host="192.168.5.33", user="root", passwd="quinta", database="Cantina") #credenziali mysql
+                myc7=mydb7.cursor()
+                myc7.execute("select volumeAggB from StoricoBotte where idBotte="+str(cod[2])+" and flagVolume=1 order by dataAggB desc limit 10")
+                recordQuant=myc7.fetchall()
+                myc7.execute("select dataAggB from StoricoBotte where idBotte="+str(cod[2])+" and flagVolume=1 order by dataAggB desc limit 10")
+                recordDate=myc7.fetchall()
+                for i in recordQuant:
+                    try:
+                        misure=misure+str(i[0])
+                        c+=1
+                        if c<len(recordQuant):
+                            misure=misure+","
+                    except:
+                        c+=1
+                        pass
+                c=0
+                for i in recordDate:
+                    try:
+                        quando=quando+str(i[0])
+                        c+=1
+                        if c<len(recordDate):
+                            quando=quando+","
+                    except:
+                        c+=1
+                        pass
+                dati=misure+";"+quando
+                connClient.send(dati.encode())
+            except BrokenPipeError:
+                mydb7.close()
+            except Exception as e:
+                print(e)
+                connClient.send("errore invio dati".encode())
+                mydb7.close()
     except KeyboardInterrupt:
         s.close()
         print("server chiuso")

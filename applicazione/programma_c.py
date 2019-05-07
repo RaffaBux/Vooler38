@@ -392,10 +392,6 @@ class Ui_TempGUI(object):
         self.temp_grid.setObjectName("temp_grid")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.temp_grid)
         self.gridLayout_2.setObjectName("gridLayout_2")
-        self.monitoraggioButton = QtWidgets.QPushButton(self.temp_grid)
-        self.monitoraggioButton.setObjectName("monitoraggioButton")
-        self.monitoraggioButton.clicked.connect(lambda: self.graficoCart(name))
-        self.gridLayout_2.addWidget(self.monitoraggioButton, 7, 0, 1, 1)
         self.tempModLabel = QtWidgets.QLabel(self.temp_grid)
         self.tempModLabel.setObjectName("tempModLabel")
         self.gridLayout_2.addWidget(self.tempModLabel, 3, 0, 1, 1)
@@ -449,19 +445,39 @@ class Ui_TempGUI(object):
         self.gridLayout_2.addLayout(self.horizontalLayout, 4, 1, 2, 1)
         spacerItem2 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.gridLayout_2.addItem(spacerItem2, 6, 1, 1, 1)
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.monitoraggioButton = QtWidgets.QPushButton(self.temp_grid)
+        self.monitoraggioButton.setObjectName("monitoraggioButton")
+        self.monitoraggioButton.clicked.connect(lambda: self.graficoTemp(name))
+        self.horizontalLayout_2.addWidget(self.monitoraggioButton)        
         if name[0]=="V":
-                self.contenutoLabel1 = QtWidgets.QLabel(self.temp_grid)
-                self.contenutoLabel1.setObjectName("contenutoLabel1")
-                self.gridLayout_2.addWidget(self.contenutoLabel1, 1, 0, 1, 1)
-                self.contenutoLabel2 = QtWidgets.QLabel(self.temp_grid)
-                self.contenutoLabel2.setText("")
-                self.contenutoLabel2.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
-                self.contenutoLabel2.setObjectName("contenutoLabel2")
-                self.gridLayout_2.addWidget(self.contenutoLabel2, 1, 1, 1, 1)
+            self.quantitaButton = QtWidgets.QPushButton(self.temp_grid)
+            self.quantitaButton.setObjectName("quantitaButton")
+            self.quantitaButton.clicked.connect(lambda: self.graficoQuant(name))
+            self.horizontalLayout_2.addWidget(self.quantitaButton)
+            self.contenutoLabel1 = QtWidgets.QLabel(self.temp_grid)
+            self.contenutoLabel1.setObjectName("contenutoLabel1")
+            self.gridLayout_2.addWidget(self.contenutoLabel1, 1, 0, 1, 1)
+            self.contenutoLabel2 = QtWidgets.QLabel(self.temp_grid)
+            self.contenutoLabel2.setText("")
+            self.contenutoLabel2.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+            self.contenutoLabel2.setObjectName("contenutoLabel2")
+            self.gridLayout_2.addWidget(self.contenutoLabel2, 1, 1, 1, 1)
+        self.gridLayout_2.addLayout(self.horizontalLayout_2, 9, 0, 1, 1)
         self.confermaLabel = QtWidgets.QLabel(self.temp_grid)
         self.confermaLabel.setText("")
         self.confermaLabel.setObjectName("confermaLabel")
         self.gridLayout_2.addWidget(self.confermaLabel, 6, 1, 1, 1)
+        self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
+        self.statoscrLabel = QtWidgets.QLabel(self.temp_grid)
+        self.statoscrLabel.setObjectName("statoscrLabel")
+        self.horizontalLayout_3.addWidget(self.statoscrLabel)
+        self.statoLabel = QtWidgets.QLabel(self.temp_grid)
+        self.statoLabel.setObjectName("statoLabel")
+        self.horizontalLayout_3.addWidget(self.statoLabel)
+        self.gridLayout_2.addLayout(self.horizontalLayout_3, 9, 2, 1, 1)
         TempGUI.setCentralWidget(self.temp_grid)
         self.retranslateUi(TempGUI, name)
         QtCore.QMetaObject.connectSlotsByName(TempGUI)
@@ -481,7 +497,9 @@ class Ui_TempGUI(object):
         self.celsiusLabel2.setText(_translate("TempGUI", "°C"))
         self.confermaButton.setText(_translate("TempGUI", "Conferma"))
         self.resetButton.setText(_translate("TempGUI", "Reset"))
+        self.statoscrLabel.setText(_translate("TempGUI", "off"))
         if name[0]=="V":
+            self.quantitaButton.setText(_translate("TempGUI", "Quantità"))
             self.contenutoLabel1.setText(_translate("TempGUI", "Contenuto '"+name+"':"))
             self.contenutoLabel2.setText(_translate("TempGUI", "*****"))
             contenuto=Thread(target=self.contVaso, args=[self.contenutoLabel2, name], daemon=True)
@@ -568,7 +586,7 @@ class Ui_TempGUI(object):
         e.sleep(10)
         self.confermaLabel.setText("")
 
-    def graficoCart(self, name):
+    def graficoTemp(self, name):
         cod=userText+","+passwdText+",6,"+name
         try:
             import socket
@@ -596,7 +614,7 @@ class Ui_TempGUI(object):
             plt.plot(x, y, marker="*", color='red')
             plt.title("Storico temperature "+name)
             plt.xlabel("Data misurazione") 
-            plt.ylabel("Temperatura")
+            plt.ylabel("Temperatura (°C)")
             plt.show()
         except RuntimeError:
             pass
@@ -604,6 +622,43 @@ class Ui_TempGUI(object):
             print(e)
             self.confermaLabel.setText("errore generazione grafico")
             client6.close()
+
+    def graficoQuant(self, name):
+        cod=userText+","+passwdText+",7,"+name
+        try:
+            import socket
+            import numpy as np 
+            import matplotlib.pyplot as plt
+            import matplotlib.dates as dt
+            import matplotlib.ticker as tick
+            import dateutil
+            client7=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            client7.connect(("localhost",9090)) #!!!!!!
+            client7.send(cod.encode())
+            risp=client7.recv(1024).decode()
+            client7.close()
+            dati=risp.split(";")
+            misure=dati[0].split(",")
+            quando=dati[1].split(",")
+            misure=misure[::-1]
+            x=[dateutil.parser.parse(q) for q in quando]
+            y=misure
+            ax=plt.gca()
+            xfmt=dt.DateFormatter('%d/%m/%y %H:%M:%S')
+            ax.xaxis.set_major_formatter(xfmt)
+            ax.set_xticks(x)
+            plt.xticks(rotation=-45)
+            plt.plot(x, y, marker="*", color='red')
+            plt.title("Storico volumi "+name)
+            plt.xlabel("Data misurazione") 
+            plt.ylabel("Volume (L)")
+            plt.show()
+        except RuntimeError:
+            pass
+        except Exception as e:
+            print(e)
+            self.confermaLabel.setText("errore generazione grafico")
+            client7.close()
 
 if __name__ == "__main__":
     import sys

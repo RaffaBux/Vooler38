@@ -19,37 +19,31 @@
   </property>
   <widget class="QWidget" name="temp_grid">
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="2" column="0">
-     <widget class="QLabel" name="tempAttLabel2">
-      <property name="text">
-       <string>Temperatura ******:</string>
-      </property>
-     </widget>
+    <item row="9" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QPushButton" name="monitoraggioButton">
+        <property name="text">
+         <string>Temperature</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="quantitaButton">
+        <property name="text">
+         <string>Quantità</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
-    <item row="8" column="1">
-     <spacer name="space3_1">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>40</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="8" column="2">
-     <widget class="QLabel" name="statoLabel">
+    <item row="2" column="1">
+     <widget class="QLabel" name="tempAttLabel1">
       <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/sfondo/gray.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string>---</string>
       </property>
-     </widget>
-    </item>
-    <item row="8" column="0">
-     <widget class="QPushButton" name="monitoraggioButton">
-      <property name="text">
-       <string>Monitoraggio</string>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
     </item>
@@ -60,13 +54,10 @@
       </property>
      </widget>
     </item>
-    <item row="2" column="1">
-     <widget class="QLabel" name="tempAttLabel1">
+    <item row="2" column="0">
+     <widget class="QLabel" name="tempAttLabel2">
       <property name="text">
-       <string>---</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       <string>Temperatura ******:</string>
       </property>
      </widget>
     </item>
@@ -194,6 +185,37 @@
        <string/>
       </property>
      </widget>
+    </item>
+    <item row="9" column="1">
+     <spacer name="space3_1">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="9" column="2">
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QLabel" name="statoscrLabel">
+        <property name="text">
+         <string>off</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="statoLabel">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/sfondo/gray.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>
