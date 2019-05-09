@@ -70,7 +70,7 @@ class Ui_MainGUI(object):
         global userText, passwdText
         import socket
         client0=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client0.connect(("localhost",9090)) #indirizzo server
+        client0.connect(("localhost",8080)) #indirizzo server
         userText=self.usernameLine.text()
         passwdText=self.passwordLine.text()
         cred=userText+","+passwdText+",0"
@@ -354,7 +354,7 @@ class Ui_CantinaGUI(QtWidgets.QMainWindow):
         while True:
             try:
                 client1=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                client1.connect(("localhost",9090)) #indirizzo server 
+                client1.connect(("localhost",8080)) #indirizzo server 
                 client1.send(cred.encode())
                 risp=client1.recv(1024).decode()
                 self.tempestLabel.setText("Temperatura esterna: "+str(risp)+"°C")
@@ -512,7 +512,7 @@ class Ui_TempGUI(object):
         while True:
             try:
                 client2=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                client2.connect(("localhost",9090)) #!!!!!!
+                client2.connect(("localhost",8080)) #!!!!!!
                 client2.send(cod.encode())
                 risp=client2.recv(1024).decode()
                 self.tempAttLabel1.setText(str(risp))
@@ -531,7 +531,7 @@ class Ui_TempGUI(object):
         while True:
             try:
                 client3=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                client3.connect(("localhost",9090)) #!!!!!!
+                client3.connect(("localhost",8080)) #!!!!!!
                 client3.send(cod.encode())
                 risp=client3.recv(1024).decode()
                 self.contenutoLabel2.setText(str(risp))
@@ -548,7 +548,7 @@ class Ui_TempGUI(object):
         cod=userText+","+passwdText+",4,"+name
         try:
             client4=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            client4.connect(("localhost",9090)) #!!!!!!
+            client4.connect(("localhost",8080)) #!!!!!!
             client4.send(cod.encode())
             risp=client4.recv(1024).decode()
             self.tempSpin.setValue(float(risp))
@@ -565,7 +565,7 @@ class Ui_TempGUI(object):
         cod=userText+","+passwdText+",5,"+name+","+str(valore)
         try:
             client5=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            client5.connect(("localhost",9090)) #!!!!!!
+            client5.connect(("localhost",8080)) #!!!!!!
             client5.send(cod.encode())
             risp=client5.recv(1024).decode()
             self.confermaLabel.setText(str(risp))
@@ -596,16 +596,32 @@ class Ui_TempGUI(object):
             import matplotlib.ticker as tick
             import dateutil
             client6=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            client6.connect(("localhost",9090)) #!!!!!!
+            client6.connect(("localhost",8080)) #!!!!!!
             client6.send(cod.encode())
             risp=client6.recv(1024).decode()
             client6.close()
             dati=risp.split(";")
             misure=dati[0].split(",")
             quando=dati[1].split(",")
+            print(misure)
+            print(quando)
             misure=misure[::-1]
+            quando=quando[::-1]
             x=[dateutil.parser.parse(q) for q in quando]
             y=misure
+
+            fig, ax = plt.subplots()
+            ax.set_title("Storico temperature "+name)
+            ax.set_xlabel('Time')
+            ax.set_ylabel('Solar')
+            ax.plot_date(xs, ys, 'k-')
+            hfmt = mdates.DateFormatter('%H:%M:%S')
+            ax.xaxis.set_major_formatter(hfmt)
+            plt.gcf().autofmt_xdate()
+            plt.show()
+
+
+
             ax=plt.gca()
             xfmt=dt.DateFormatter('%d/%m/%y %H:%M:%S')
             ax.xaxis.set_major_formatter(xfmt)
@@ -633,7 +649,7 @@ class Ui_TempGUI(object):
             import matplotlib.ticker as tick
             import dateutil
             client7=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            client7.connect(("localhost",9090)) #!!!!!!
+            client7.connect(("localhost",8080)) #!!!!!!
             client7.send(cod.encode())
             risp=client7.recv(1024).decode()
             client7.close()
@@ -641,6 +657,7 @@ class Ui_TempGUI(object):
             misure=dati[0].split(",")
             quando=dati[1].split(",")
             misure=misure[::-1]
+            quando=quando[::-1]
             x=[dateutil.parser.parse(q) for q in quando]
             y=misure
             ax=plt.gca()

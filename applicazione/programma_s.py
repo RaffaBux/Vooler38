@@ -2,7 +2,7 @@
 import socket
 import mysql.connector as mys
 s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind(("localhost", 9090)) #indirizzo macchina
+s.bind(("localhost", 8080)) #indirizzo macchina
 s.listen(10)
 while True:
     try:
@@ -178,6 +178,7 @@ while True:
             misure=""
             quando=""
             dati=""
+            c=0
             cod=str(cod[3]).split(" ")
             try:
                 mydb7=mys.connect(host="192.168.5.33", user="root", passwd="quinta", database="Cantina") #credenziali mysql
