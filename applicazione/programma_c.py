@@ -595,6 +595,7 @@ class Ui_TempGUI(object):
             import matplotlib.dates as dt
             import matplotlib.ticker as tick
             import dateutil
+
             client6=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             client6.connect(("localhost",8080)) #!!!!!!
             client6.send(cod.encode())
@@ -605,12 +606,11 @@ class Ui_TempGUI(object):
             quando=dati[1].split(",")
             print(misure)
             print(quando)
-            misure=misure[::-1]
+            y=misure[::-1]
             quando=quando[::-1]
             x=[dateutil.parser.parse(q) for q in quando]
-            y=misure
 
-            fig, ax = plt.subplots()
+            '''fig, ax = plt.subplots()
             ax.set_title("Storico temperature "+name)
             ax.set_xlabel('Time')
             ax.set_ylabel('Solar')
@@ -618,20 +618,18 @@ class Ui_TempGUI(object):
             hfmt = mdates.DateFormatter('%H:%M:%S')
             ax.xaxis.set_major_formatter(hfmt)
             plt.gcf().autofmt_xdate()
-            plt.show()
-
-
+            plt.show()'''
 
             ax=plt.gca()
-            xfmt=dt.DateFormatter('%d/%m/%y %H:%M:%S')
+            xfmt=dt.DateFormatter("%d/%m/%y %H:%M:%S")
             ax.xaxis.set_major_formatter(xfmt)
-            ax.set_xticks(x)
-            plt.xticks(rotation=-45)
-            plt.plot(x, y, marker="*", color='red')
+            plt.plot(x, y, marker="*", color="red")
             plt.title("Storico temperature "+name)
             plt.xlabel("Data misurazione") 
             plt.ylabel("Temperatura (°C)")
             plt.show()
+
+            
         except RuntimeError:
             pass
         except Exception as e:
