@@ -590,12 +590,9 @@ class Ui_TempGUI(object):
         cod=userText+","+passwdText+",6,"+name
         try:
             import socket
-            import numpy as np 
             import matplotlib.pyplot as plt
             import matplotlib.dates as dt
-            import matplotlib.ticker as tick
             import dateutil
-
             client6=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             client6.connect(("localhost",8080)) #!!!!!!
             client6.send(cod.encode())
@@ -604,32 +601,24 @@ class Ui_TempGUI(object):
             dati=risp.split(";")
             misure=dati[0].split(",")
             quando=dati[1].split(",")
+            misure=[float(valore) for valore in misure]
             print(misure)
             print(quando)
             y=misure[::-1]
             quando=quando[::-1]
             x=[dateutil.parser.parse(q) for q in quando]
-
-            '''fig, ax = plt.subplots()
-            ax.set_title("Storico temperature "+name)
-            ax.set_xlabel('Time')
-            ax.set_ylabel('Solar')
-            ax.plot_date(xs, ys, 'k-')
-            hfmt = mdates.DateFormatter('%H:%M:%S')
-            ax.xaxis.set_major_formatter(hfmt)
-            plt.gcf().autofmt_xdate()
-            plt.show()'''
-
-            ax=plt.gca()
             xfmt=dt.DateFormatter("%d/%m/%y %H:%M:%S")
+            fig, ax = plt.subplots()
+            ax.set_title("Storico temperature "+name)
+            ax.set_xlabel("Data misurazione")
+            ax.set_ylabel("Temperatura (°C)")
+            ax.plot_date(x,y,"bo--", linewidth=2, markersize=6)
             ax.xaxis.set_major_formatter(xfmt)
-            plt.plot(x, y, marker="*", color="red")
-            plt.title("Storico temperature "+name)
-            plt.xlabel("Data misurazione") 
-            plt.ylabel("Temperatura (°C)")
-            plt.show()
-
-            
+            plt.gcf().autofmt_xdate()
+            plt.grid(True)
+            plt.yticks(y)
+            plt.xticks(x)
+            plt.show()   
         except RuntimeError:
             pass
         except Exception as e:
@@ -641,10 +630,8 @@ class Ui_TempGUI(object):
         cod=userText+","+passwdText+",7,"+name
         try:
             import socket
-            import numpy as np 
             import matplotlib.pyplot as plt
             import matplotlib.dates as dt
-            import matplotlib.ticker as tick
             import dateutil
             client7=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             client7.connect(("localhost",8080)) #!!!!!!
@@ -654,19 +641,23 @@ class Ui_TempGUI(object):
             dati=risp.split(";")
             misure=dati[0].split(",")
             quando=dati[1].split(",")
-            misure=misure[::-1]
+            misure=[float(valore) for valore in misure]
+            print(misure)
+            print(quando)
+            y=misure[::-1]
             quando=quando[::-1]
             x=[dateutil.parser.parse(q) for q in quando]
-            y=misure
-            ax=plt.gca()
-            xfmt=dt.DateFormatter('%d/%m/%y %H:%M:%S')
+            xfmt=dt.DateFormatter("%d/%m/%y %H:%M:%S")
+            fig, ax = plt.subplots()
+            ax.set_title("Storico volumi "+name)
+            ax.set_xlabel("Data misurazione")
+            ax.set_ylabel("Volume (L)")
+            ax.plot_date(x,y,"bo--", linewidth=2, markersize=6)
             ax.xaxis.set_major_formatter(xfmt)
-            ax.set_xticks(x)
-            plt.xticks(rotation=-45)
-            plt.plot(x, y, marker="*", color='red')
-            plt.title("Storico volumi "+name)
-            plt.xlabel("Data misurazione") 
-            plt.ylabel("Volume (L)")
+            plt.gcf().autofmt_xdate()
+            plt.grid(True)
+            plt.yticks(y)
+            plt.xticks(x)
             plt.show()
         except RuntimeError:
             pass
