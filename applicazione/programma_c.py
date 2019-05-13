@@ -487,7 +487,6 @@ class Ui_TempGUI(object):
         TempGUI.setWindowTitle(_translate("TempGUI", "'"+name+"'"))
         self.monitoraggioButton.setText(_translate("TempGUI", "Monitoraggio"))
         self.tempModLabel.setText(_translate("TempGUI", "Temperatura modificabile: "))
-        self.statoLabel.setText(_translate("TempGUI", "<html><head/><body><p><img src=\"gray.png\"/></p></body></html>"))
         self.tempAttLabel2.setText(_translate("TempGUI", "Temperatura '"+name+"':"))
         self.tempAttLabel1.setText(_translate("TempGUI", "*****"))
         from threading import Thread
@@ -497,13 +496,44 @@ class Ui_TempGUI(object):
         self.celsiusLabel2.setText(_translate("TempGUI", "°C"))
         self.confermaButton.setText(_translate("TempGUI", "Conferma"))
         self.resetButton.setText(_translate("TempGUI", "Reset"))
+        self.statoLabel.setText(_translate("TempGUI", "<html><head/><body><p><img src=\"gray.png\"/></p></body></html>"))
         self.statoscrLabel.setText(_translate("TempGUI", "off"))
+        stvalv=Thread(target=self.statoValv, args=[self.statoLabel, self.statoscrLabel, name], daemon=True)
+        stvalv.start()
         if name[0]=="V":
             self.quantitaButton.setText(_translate("TempGUI", "Quantità"))
             self.contenutoLabel1.setText(_translate("TempGUI", "Contenuto '"+name+"':"))
             self.contenutoLabel2.setText(_translate("TempGUI", "*****"))
             contenuto=Thread(target=self.contVaso, args=[self.contenutoLabel2, name], daemon=True)
             contenuto.start()
+
+    def statoValv(self, statoLabel, statoscrLabel, name):
+        import time as f
+        cod=userText+","+passwdText+",8,"+name
+        while True:
+            try:
+                import socket
+                client8=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                client8.connect(("localhost",8080)) #!!!!!!
+                client8.send(cod.encode())
+                risp=client8.recv(1024).decode()
+                client8.close()
+                if risp=="on":
+                    self.statoLabel.setText("<html><head/><body><p><img src=\"green.png\"/></p></body></html>")
+                elif risp=="off":
+                    self.statoLabel.setText("<html><head/><body><p><img src=\"gray.png\"/></p></body></html>")
+                elif risp=="avaria":
+                    self.statoLabel.setText("<html><head/><body><p><img src=\"red.png\"/></p></body></html>")
+                elif risp=="disinserita":
+                    self.statoLabel.setText("<html><head/><body><p><img src=\"white.png\"/></p></body></html>")
+                self.statoscrLabel.setText(risp)
+            except RuntimeError:
+                pass
+            except Exception as e:
+                print(e)
+                self.confermaLabel.setText("*****")
+                client8.close()
+            f.sleep(20)
 
     def tempRich(self, tempAttLabel1, xxx):
         import time as b

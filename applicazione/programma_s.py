@@ -38,20 +38,29 @@ while True:
             except:
                 connClient.send("*****".encode())
                 mydb1.close()
-        elif int(cod[2])==2:    #temperature botti e locali
+        elif int(cod[2])==2:    #temperature botti e locali e controllo sonda
             print(cod)
             cod=str(cod[3]).split(" ")
             try:
                 mydb2=mys.connect(host="192.168.5.33", user="root", passwd="quinta", database="Cantina") #credenziali mysql
                 myc2=mydb2.cursor()
                 if cod[0]=="Vaso":
-                    myc2.execute("select tempBotte from Botte where idBotte="+str(cod[2]))
-                    record=myc2.fetchone()
-                    connClient.send(str(record[0]).encode())
+                    myc2.execute("select statoSonda from Sonda where idBotte="+str(cod[2]))
+                    attivo=myc2.fetchone()
                 else:
-                    myc2.execute("select tempLocale from Locale where idLocale="+str(cod[1]))
-                    record=myc2.fetchone()
-                    connClient.send(str(record[0]).encode())
+                    myc2.execute("select statoSonda from Sonda where idLocale="+str(cod[1]))
+                    attivo=myc2.fetchone()
+                if attivo[0]==1:
+                    if cod[0]=="Vaso":
+                        myc2.execute("select tempBotte from Botte where idBotte="+str(cod[2]))
+                        record=myc2.fetchone()
+                        connClient.send(str(record[0]).encode())
+                    else:
+                        myc2.execute("select tempLocale from Locale where idLocale="+str(cod[1]))
+                        record=myc2.fetchone()
+                        connClient.send(str(record[0]).encode())
+                else:
+                    connClient.send("**sonda disinserita**".encode())
             except BrokenPipeError:
                 mydb2.close()
             except Exception as e:
@@ -214,6 +223,31 @@ while True:
                 print(e)
                 connClient.send("errore invio dati".encode())
                 mydb7.close()
+        elif int(cod[0])==8:    #controllo avarie valvole
+            print(cod)
+            cod=str(cod[3]).split(" ")
+            try:
+                mydb8=mys.connect(host="192.168.5.33", user="root", passwd="quinta", database="Cantina") #credenziali mysql
+                myc8=mydb8.cursor()
+                if cod[0]=="Vaso":
+                    myc8.execute("select statoValvola, funzValvola from Sonda, Valvola where Sonda.idSonda=Valvola.idSonda and Valvola.idValvola=Sonda.idValvola and Sonda.idBotte="+str(cod[2]))
+                else:
+                    myc8.execute("select statoValvola, funzValvola from Sonda, Valvola where Sonda.idSonda=Valvola.idSonda and Valvola.idValvola=Sonda.idValvola and Sonda.idLocale="+str(cod[1]))
+                record=myc8.fetchone()
+                if record[0]==0 and record[1]==0:
+                    connClient.send("disinserita".encode())
+                elif record[0]==0 and record[1]==1:
+                    connClient.send("avaria".encode())
+                elif record[0]==1 and record[1]==0:
+                    connClient.send("off".encode())
+                elif record[0]==1 and record[1]==1:
+                    connClient.send("on".encode())
+            except BrokenPipeError:
+                mydb8.close()
+            except Exception as e:
+                print(e)
+                connClient.send("*****".encode())
+                mydb8.close()
     except KeyboardInterrupt:
         s.close()
         print("server chiuso")
