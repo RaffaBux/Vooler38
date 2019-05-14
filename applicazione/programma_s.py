@@ -2,7 +2,7 @@
 import socket
 import mysql.connector as mys
 s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind(("localhost", 8080)) #indirizzo macchina
+s.bind(("localhost", 8282)) #indirizzo macchina
 s.listen(10)
 while True:
     try:
@@ -45,10 +45,10 @@ while True:
                 mydb2=mys.connect(host="192.168.5.33", user="root", passwd="quinta", database="Cantina") #credenziali mysql
                 myc2=mydb2.cursor()
                 if cod[0]=="Vaso":
-                    myc2.execute("select statoSonda from Sonda where idBotte="+str(cod[2]))
+                    myc2.execute("select statoS from Sonda where idBotte="+str(cod[2]))
                     attivo=myc2.fetchone()
                 else:
-                    myc2.execute("select statoSonda from Sonda where idLocale="+str(cod[1]))
+                    myc2.execute("select statoS from Sonda where idLocale="+str(cod[1]))
                     attivo=myc2.fetchone()
                 if attivo[0]==1:
                     if cod[0]=="Vaso":
@@ -223,16 +223,16 @@ while True:
                 print(e)
                 connClient.send("errore invio dati".encode())
                 mydb7.close()
-        elif int(cod[0])==8:    #controllo avarie valvole
+        elif int(cod[2])==8:    #controllo avarie valvole
             print(cod)
             cod=str(cod[3]).split(" ")
             try:
                 mydb8=mys.connect(host="192.168.5.33", user="root", passwd="quinta", database="Cantina") #credenziali mysql
                 myc8=mydb8.cursor()
                 if cod[0]=="Vaso":
-                    myc8.execute("select statoValvola, funzValvola from Sonda, Valvola where Sonda.idSonda=Valvola.idSonda and Valvola.idValvola=Sonda.idValvola and Sonda.idBotte="+str(cod[2]))
+                    myc8.execute("select statoV, funzV from Sonda,Botte where Sonda.idSondaV=Botte.idSondaV and Sonda.idBotte="+str(cod[2]))
                 else:
-                    myc8.execute("select statoValvola, funzValvola from Sonda, Valvola where Sonda.idSonda=Valvola.idSonda and Valvola.idValvola=Sonda.idValvola and Sonda.idLocale="+str(cod[1]))
+                    myc8.execute("select statoV, funzV from Sonda,Locale where Sonda.idSondaV=Locale.idSondaV and Sonda.idLocale="+str(cod[1]))
                 record=myc8.fetchone()
                 if record[0]==0 and record[1]==0:
                     connClient.send("disinserita".encode())

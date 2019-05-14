@@ -29,8 +29,7 @@ CREATE TABLE `Botte` (
   `tempsetBotte` double NOT NULL,
   `idLocale` int(11) NOT NULL,
   `volume` double NOT NULL,
-  `idSonda` int(11) NOT NULL,
-  `idValvola` int(11) NOT NULL,
+  `idSondaV` int(11) NOT NULL,
   PRIMARY KEY (`idBotte`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -41,7 +40,7 @@ CREATE TABLE `Botte` (
 
 LOCK TABLES `Botte` WRITE;
 /*!40000 ALTER TABLE `Botte` DISABLE KEYS */;
-INSERT INTO `Botte` VALUES (4,'prosecco',94,32,2,807,0,0),(5,'serprino',79,29,2,378,0,0),(6,'glera',14,26,2,469,0,0),(7,'malvasia',64,30,2,93,0,0),(8,'moscato',45,31,2,975,0,0),(9,'vuoto',98,26,2,142,0,0),(10,'pinot',63,31,2,992,0,0),(11,'chardonnay',62,26,2,705,0,0),(12,'tai',97,26,2,842,0,0),(13,'vuota',64,27,2,513,0,0),(14,'moscato',85,32,1,446,0,0),(15,'tai',30,28.100000000000016,1,662,0,0),(16,'garganego',51,26,1,682,0,0),(17,'vuota',3,26,1,892,0,0),(18,'sfuso',55,30,1,115,0,0),(19,'vuota',57,27,1,555,0,0),(20,'moscato',56,27.100000000000016,1,129,0,0),(21,'garganego',2,29,1,935,0,0),(22,'vuota',42,29,3,977,0,0),(23,'tai',52,29,3,459,0,0),(24,'chardonnay',21,29,3,578,0,0),(25,'moscato',50,26,3,236,0,0),(26,'tai',93,29,3,147,0,0),(27,'garganego',48,26,3,159,0,0),(28,'vuota',40,29,3,44,0,0),(29,'malvasia',36,27,3,785,0,0),(30,'sfuso',71,28,3,47,0,0),(31,'glera',99,32,3,349,0,0),(32,'glera',61,26,3,39,0,0),(33,'pinot',43,26,3,896,0,0);
+INSERT INTO `Botte` VALUES (4,'prosecco',94,32,2,807,4),(5,'serprino',79,29,2,378,5),(6,'glera',14,26,2,469,6),(7,'malvasia',64,30,2,93,7),(8,'moscato',45,31,2,975,8),(9,'vuoto',98,26,2,142,9),(10,'pinot',63,31,2,992,10),(11,'chardonnay',62,26,2,705,11),(12,'tai',97,26,2,842,12),(13,'vuota',64,27,2,513,13),(14,'moscato',85,32,1,446,14),(15,'tai',30,28.100000000000016,1,662,15),(16,'garganego',51,26,1,682,16),(17,'vuota',3,26,1,892,17),(18,'sfuso',55,30,1,115,18),(19,'vuota',57,27,1,555,19),(20,'moscato',56,27.100000000000016,1,129,20),(21,'garganego',2,29,1,935,21),(22,'vuota',42,29,3,977,22),(23,'tai',52,29,3,459,23),(24,'chardonnay',21,29,3,578,24),(25,'moscato',50,26,3,236,25),(26,'tai',93,29,3,147,26),(27,'garganego',48,26,3,159,27),(28,'vuota',40,29,3,44,28),(29,'malvasia',36,27,3,785,29),(30,'sfuso',71,28,3,47,30),(31,'glera',99,32,3,349,31),(32,'glera',61,26,3,39,32),(33,'pinot',43,26,3,896,33);
 /*!40000 ALTER TABLE `Botte` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -56,7 +55,7 @@ CREATE TABLE `Locale` (
   `idLocale` int(11) NOT NULL AUTO_INCREMENT,
   `tempLocale` double NOT NULL,
   `tempsetLocale` double NOT NULL,
-  `idSonda` int(11) NOT NULL,
+  `idSondaV` int(11) NOT NULL,
   PRIMARY KEY (`idLocale`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -67,7 +66,7 @@ CREATE TABLE `Locale` (
 
 LOCK TABLES `Locale` WRITE;
 /*!40000 ALTER TABLE `Locale` DISABLE KEYS */;
-INSERT INTO `Locale` VALUES (1,33,27,0),(2,33,27,0),(3,34,29,0);
+INSERT INTO `Locale` VALUES (1,33,27,1),(2,33,27,2),(3,34,29,3);
 /*!40000 ALTER TABLE `Locale` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -79,12 +78,13 @@ DROP TABLE IF EXISTS `Sonda`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Sonda` (
-  `idSonda` int(11) NOT NULL AUTO_INCREMENT,
-  `statoSonda` tinyint(4) NOT NULL,
-  `idBotte` int(11) NOT NULL,
-  `idLocale` int(11) NOT NULL,
-  `idValvola` int(11) NOT NULL,
-  PRIMARY KEY (`idSonda`)
+  `idSondaV` int(11) NOT NULL,
+  `statoS` tinyint(4) NOT NULL,
+  `statoV` tinyint(4) NOT NULL,
+  `funzV` tinyint(4) NOT NULL,
+  `idBotte` int(11) DEFAULT NULL,
+  `idLocale` int(11) DEFAULT NULL,
+  PRIMARY KEY (`idSondaV`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -94,6 +94,7 @@ CREATE TABLE `Sonda` (
 
 LOCK TABLES `Sonda` WRITE;
 /*!40000 ALTER TABLE `Sonda` DISABLE KEYS */;
+INSERT INTO `Sonda` VALUES (1,0,1,0,NULL,1),(2,1,1,0,NULL,2),(3,1,0,0,NULL,3),(4,0,1,1,4,NULL),(5,1,1,0,5,NULL),(6,1,1,1,6,NULL),(7,0,1,0,7,NULL),(8,0,1,1,8,NULL),(9,1,0,1,9,NULL),(10,1,1,1,10,NULL),(11,1,0,1,11,NULL),(12,1,0,1,12,NULL),(13,0,1,1,13,NULL),(14,1,1,1,14,NULL),(15,1,0,1,15,NULL),(16,0,1,1,16,NULL),(17,1,1,0,17,NULL),(18,0,0,0,18,NULL),(19,1,0,0,19,NULL),(20,0,1,1,20,NULL),(21,0,1,1,21,NULL),(22,1,1,1,22,NULL),(23,1,0,1,23,NULL),(24,1,0,0,24,NULL),(25,1,0,1,25,NULL),(26,0,1,0,26,NULL),(27,0,0,1,27,NULL),(28,0,0,0,28,NULL),(29,1,1,0,29,NULL),(30,0,1,0,30,NULL),(31,0,1,1,31,NULL),(32,1,0,1,32,NULL),(33,1,0,0,33,NULL);
 /*!40000 ALTER TABLE `Sonda` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -155,82 +156,6 @@ LOCK TABLES `StoricoLocale` WRITE;
 INSERT INTO `StoricoLocale` VALUES (1,'2019-05-03 09:32:34',2.1,2,27),(2,'2019-05-03 09:32:38',3.1,3,29),(3,'2019-05-03 09:32:59',1.1,1,27),(4,'2019-05-03 09:33:26',32,3,29),(5,'2019-05-03 09:33:28',33,3,29),(6,'2019-05-03 09:33:51',32,1,27),(7,'2019-05-03 09:33:59',30,2,27),(8,'2019-05-03 09:34:00',33,3,29),(9,'2019-05-03 09:34:20',34,3,29),(10,'2019-05-03 09:44:43',34,3,29),(11,'2019-05-03 09:44:54',34,1,27),(12,'2019-05-03 09:44:58',25,3,29),(13,'2019-05-03 09:45:03',26,3,29),(14,'2019-05-03 09:45:06',26,1,27),(15,'2019-05-03 09:45:08',27,1,27),(16,'2019-05-03 09:45:32',27,1,27),(17,'2019-05-03 09:46:36',28,1,27),(18,'2019-05-03 09:47:28',29,1,27),(19,'2019-05-03 09:47:41',34,2,27),(20,'2019-05-03 09:47:44',30,1,27),(21,'2019-05-03 09:47:49',27,3,29),(22,'2019-05-03 09:48:11',30,1,27),(23,'2019-05-03 09:48:21',30,1,27),(24,'2019-05-03 09:48:31',30,3,29),(25,'2019-05-03 09:48:50',30,2,27),(26,'2019-05-03 09:49:25',30,1,27),(27,'2019-05-03 09:49:41',31,2,27),(28,'2019-05-03 09:50:24',31,1,27),(29,'2019-05-03 09:50:53',31,1,27),(30,'2019-05-03 09:51:07',31,2,27),(31,'2019-05-03 09:51:10',30,3,29),(32,'2019-05-03 09:51:23',30,3,29),(33,'2019-05-03 09:51:55',30,3,29),(34,'2019-05-03 09:52:10',30,1,27),(35,'2019-05-03 09:52:52',31,1,27),(36,'2019-05-03 09:52:55',30,2,27),(37,'2019-05-03 09:53:06',32,2,27),(38,'2019-05-03 09:53:21',32,2,27),(39,'2019-05-03 09:53:55',31,3,29),(40,'2019-05-03 09:54:54',32,1,27),(41,'2019-05-03 09:55:03',32,2,27),(42,'2019-05-03 09:55:38',32,3,29),(43,'2019-05-03 09:55:59',33,3,29),(44,'2019-05-03 09:56:33',33,1,27),(45,'2019-05-03 09:57:01',33,2,27),(46,'2019-05-03 09:57:18',33,2,27),(47,'2019-05-03 09:57:23',33,2,27),(48,'2019-05-03 09:57:53',33,2,27),(49,'2019-05-03 09:57:57',33,1,27),(50,'2019-05-03 09:58:02',33,1,27),(51,'2019-05-03 09:58:05',33,1,27),(52,'2019-05-03 09:58:28',33,2,27),(53,'2019-05-03 09:59:23',33,3,29),(54,'2019-05-03 09:59:31',33,3,29),(55,'2019-05-03 10:00:36',33,1,27),(56,'2019-05-03 10:00:40',33,2,27),(57,'2019-05-03 10:01:18',33,1,27),(58,'2019-05-03 10:01:26',33,1,27),(59,'2019-05-03 10:01:37',33,1,27),(60,'2019-05-03 10:01:48',33,3,29),(61,'2019-05-03 10:02:00',33,1,27),(62,'2019-05-03 10:02:13',33,2,27),(63,'2019-05-03 10:02:22',33,3,29),(64,'2019-05-03 10:02:29',33,1,27),(65,'2019-05-03 10:02:32',33,3,29),(66,'2019-05-03 10:02:44',33,3,29),(67,'2019-05-03 10:02:48',33,2,27),(68,'2019-05-03 10:03:26',33,2,27),(69,'2019-05-03 10:03:41',33,3,29),(70,'2019-05-03 10:03:49',33,2,27),(71,'2019-05-03 10:04:15',33,3,29);
 /*!40000 ALTER TABLE `StoricoLocale` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `StoricoSonda`
---
-
-DROP TABLE IF EXISTS `StoricoSonda`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `StoricoSonda` (
-  `idStoricoSonda` int(11) NOT NULL AUTO_INCREMENT,
-  `dataAggS` date NOT NULL,
-  `statoAggS` tinyint(4) NOT NULL,
-  `idSonda` int(11) NOT NULL,
-  PRIMARY KEY (`idStoricoSonda`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `StoricoSonda`
---
-
-LOCK TABLES `StoricoSonda` WRITE;
-/*!40000 ALTER TABLE `StoricoSonda` DISABLE KEYS */;
-/*!40000 ALTER TABLE `StoricoSonda` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `StoricoValvola`
---
-
-DROP TABLE IF EXISTS `StoricoValvola`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `StoricoValvola` (
-  `idStoricoValvola` int(11) NOT NULL AUTO_INCREMENT,
-  `dataAggV` date NOT NULL,
-  `idValvola` int(11) NOT NULL,
-  `statoAggV` tinyint(4) NOT NULL,
-  `funzAggV` tinyint(4) NOT NULL,
-  PRIMARY KEY (`idStoricoValvola`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `StoricoValvola`
---
-
-LOCK TABLES `StoricoValvola` WRITE;
-/*!40000 ALTER TABLE `StoricoValvola` DISABLE KEYS */;
-/*!40000 ALTER TABLE `StoricoValvola` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `Valvola`
---
-
-DROP TABLE IF EXISTS `Valvola`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Valvola` (
-  `idValvola` int(11) NOT NULL AUTO_INCREMENT,
-  `statoValvola` tinyint(4) NOT NULL,
-  `funzValvola` tinyint(4) NOT NULL,
-  `idSonda` int(11) NOT NULL,
-  PRIMARY KEY (`idValvola`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `Valvola`
---
-
-LOCK TABLES `Valvola` WRITE;
-/*!40000 ALTER TABLE `Valvola` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Valvola` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -241,4 +166,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-05-13 12:09:28
+-- Dump completed on 2019-05-14 10:59:01
