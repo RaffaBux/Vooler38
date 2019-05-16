@@ -94,6 +94,7 @@ class Ui_MainGUI(object):
 
 class Ui_CantinaGUI(QtWidgets.QMainWindow):
     def setupUi(self, CantinaGUI):
+        from threading import Thread
         CantinaGUI.setObjectName("CantinaGUI")
         CantinaGUI.setWindowModality(QtCore.Qt.WindowModal)
         CantinaGUI.setEnabled(True)
@@ -282,29 +283,18 @@ class Ui_CantinaGUI(QtWidgets.QMainWindow):
         self.dataoraTimeEdit.setMaximumDate(QtCore.QDate(10000, 12, 31))
         self.dataoraTimeEdit.setObjectName("dataoraTimeEdit")
         self.top_grid.addWidget(self.dataoraTimeEdit, 0, 1, 1, 1)
-        from threading import Thread
         dataora=Thread(target=self.ora, daemon=True)
         dataora.start()
         self.tempestLabel = QtWidgets.QLabel(self.centralwidget)
         self.tempestLabel.setObjectName("tempestLabel")
         self.top_grid.addWidget(self.tempestLabel, 0, 0, 1, 1)
+        tempest=Thread(target=self.tempesterna, args=[self.tempestLabel], daemon=True)    #temperatura esterna aggiornata
+        tempest.start()
         self.gridLayout_2.addLayout(self.top_grid, 0, 0, 1, 1)
         CantinaGUI.setCentralWidget(self.centralwidget)
         self.retranslateUi(CantinaGUI)
         QtCore.QMetaObject.connectSlotsByName(CantinaGUI)
 
-    def ora(self):
-        import datetime
-        import time as c
-        while True:
-            try:
-                tempo=datetime.datetime.now()
-                self.dataoraTimeEdit.setDateTime(QtCore.QDateTime(QtCore.QDate(tempo.year, tempo.month, tempo.day), QtCore.QTime(tempo.hour, tempo.minute, tempo.second)))
-                c.sleep(1)
-            except:
-                self.dataoraTimeEdit.setDateTime(QtCore.QDateTime(QtCore.QDate('**', '**', '**'), QtCore.QTime('**', '**', '**')))
-                c.sleep(1)
-        
     def retranslateUi(self, CantinaGUI):
         _translate = QtCore.QCoreApplication.translate
         CantinaGUI.setWindowTitle(_translate("CantinaGUI", "MAPPA VASI VINARI"))
@@ -343,9 +333,18 @@ class Ui_CantinaGUI(QtWidgets.QMainWindow):
         self.locale1.setText(_translate("CantinaGUI", "LOCALE 1"))
         self.vv9.setText(_translate("CantinaGUI", "v.v. 9"))
         self.tempestLabel.setText(_translate("CantinaGUI", "Temperatura esterna: *****°C"))
-        from threading import Thread
-        tempest=Thread(target=self.tempesterna, args=[self.tempestLabel], daemon=True)    #temperatura esterna aggiornata
-        tempest.start()
+
+    def ora(self):
+        import datetime
+        import time as c
+        while True:
+            try:
+                tempo=datetime.datetime.now()
+                self.dataoraTimeEdit.setDateTime(QtCore.QDateTime(QtCore.QDate(tempo.year, tempo.month, tempo.day), QtCore.QTime(tempo.hour, tempo.minute, tempo.second)))
+                c.sleep(1)
+            except:
+                self.dataoraTimeEdit.setDateTime(QtCore.QDateTime(QtCore.QDate('**', '**', '**'), QtCore.QTime('**', '**', '**')))
+                c.sleep(1)
 
     def tempesterna(self, tempestLabel):
         import time as a
@@ -483,13 +482,13 @@ class Ui_TempGUI(object):
         QtCore.QMetaObject.connectSlotsByName(TempGUI)
 
     def retranslateUi(self, TempGUI, name):
+        from threading import Thread
         _translate = QtCore.QCoreApplication.translate
         TempGUI.setWindowTitle(_translate("TempGUI", "'"+name+"'"))
         self.monitoraggioButton.setText(_translate("TempGUI", "Monitoraggio"))
         self.tempModLabel.setText(_translate("TempGUI", "Temperatura modificabile: "))
         self.tempAttLabel2.setText(_translate("TempGUI", "Temperatura '"+name+"':"))
         self.tempAttLabel1.setText(_translate("TempGUI", "*****"))
-        from threading import Thread
         tempvin=Thread(target=self.tempRich, args=[self.tempAttLabel1, name], daemon=True)
         tempvin.start()
         self.celsiusLabel1.setText(_translate("TempGUI", "°C"))
@@ -504,7 +503,7 @@ class Ui_TempGUI(object):
             self.quantitaButton.setText(_translate("TempGUI", "Quantità"))
             self.contenutoLabel1.setText(_translate("TempGUI", "Contenuto '"+name+"':"))
             self.contenutoLabel2.setText(_translate("TempGUI", "*****"))
-            contenuto=Thread(target=self.contVaso, args=[self.contenutoLabel2, name], daemon=True)
+            contenuto=Thread(target=self.contVaso, args=[self.contenutoLabel2, name])
             contenuto.start()
 
     def statoValv(self, statoLabel, statoscrLabel, name):
@@ -535,10 +534,10 @@ class Ui_TempGUI(object):
                 client8.close()
             f.sleep(20)
 
-    def tempRich(self, tempAttLabel1, xxx):
+    def tempRich(self, tempAttLabel1, name):
         import time as b
         import socket
-        cod=userText+","+passwdText+",2,"+xxx
+        cod=userText+","+passwdText+",2,"+name
         while True:
             try:
                 client2=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -554,10 +553,10 @@ class Ui_TempGUI(object):
                 client2.close()
             b.sleep(20)
         
-    def contVaso(self, contenutoLabel2, xxx):
+    def contVaso(self, contenutoLabel2, name):
         import time as d
         import socket
-        cod=userText+","+passwdText+",3,"+xxx
+        cod=userText+","+passwdText+",3,"+name
         while True:
             try:
                 client3=socket.socket(socket.AF_INET, socket.SOCK_STREAM)

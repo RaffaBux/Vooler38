@@ -89,6 +89,31 @@ LOCK TABLES `StoricoEsterno` WRITE;
 /*!40000 ALTER TABLE `StoricoEsterno` DISABLE KEYS */;
 /*!40000 ALTER TABLE `StoricoEsterno` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `StoricoSonda`
+--
+
+DROP TABLE IF EXISTS `StoricoSonda`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `StoricoSonda` (
+  `idStoricoSonda` int(11) NOT NULL AUTO_INCREMENT,
+  `dataAggS` date NOT NULL,
+  `statoAggS` tinyint(4) NOT NULL,
+  `idSonda` int(11) NOT NULL,
+  PRIMARY KEY (`idStoricoSonda`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `StoricoSonda`
+--
+
+LOCK TABLES `StoricoSonda` WRITE;
+/*!40000 ALTER TABLE `StoricoSonda` DISABLE KEYS */;
+/*!40000 ALTER TABLE `StoricoSonda` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -99,4 +124,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-05-14 10:33:11
+-- Dump completed on 2019-05-16  9:19:40
