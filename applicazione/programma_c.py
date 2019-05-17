@@ -1,6 +1,16 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-class Ui_MainGUI(object):
+class Ui_MainGUI(QtWidgets.QMainWindow):
+
+    def __init__(self):
+        super(Ui_MainGUI, self).__init__()
+        self.setupUi(self)
+        self.showMaximized()
+        print(2345)
+
+    def closeEvent(self, event):
+        print(3456)
+
     def setupUi(self, MainGUI):
         MainGUI.setObjectName("MainGUI")
         MainGUI.resize(600, 540)
@@ -93,6 +103,7 @@ class Ui_MainGUI(object):
             client0.close()
 
 class Ui_CantinaGUI(QtWidgets.QMainWindow):
+
     def setupUi(self, CantinaGUI):
         from threading import Thread
         CantinaGUI.setObjectName("CantinaGUI")
@@ -334,6 +345,9 @@ class Ui_CantinaGUI(QtWidgets.QMainWindow):
         self.vv9.setText(_translate("CantinaGUI", "v.v. 9"))
         self.tempestLabel.setText(_translate("CantinaGUI", "Temperatura esterna: *****°C"))
 
+    def closeEvent(self, event):
+        print(3456)
+    
     def ora(self):
         import datetime
         import time as c
@@ -382,6 +396,8 @@ class Ui_CantinaGUI(QtWidgets.QMainWindow):
 
 class Ui_TempGUI(object):
     def setupUi(self, TempGUI, name):
+        from threading import Thread
+        self.attivo=True
         TempGUI.setObjectName("TempGUI")
         TempGUI.resize(464, 387)
         icon = QtGui.QIcon()
@@ -406,6 +422,8 @@ class Ui_TempGUI(object):
         self.tempAttLabel1.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.tempAttLabel1.setObjectName("tempAttLabel1")
         self.gridLayout_2.addWidget(self.tempAttLabel1, 2, 1, 1, 1)
+        tempvin=Thread(target=self.tempRich, args=[self.tempAttLabel1, name], daemon=True)
+        tempvin.start()
         self.celsiusLabel1 = QtWidgets.QLabel(self.temp_grid)
         self.celsiusLabel1.setObjectName("celsiusLabel1")
         self.gridLayout_2.addWidget(self.celsiusLabel1, 2, 2, 1, 1)
@@ -463,6 +481,8 @@ class Ui_TempGUI(object):
             self.contenutoLabel2.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
             self.contenutoLabel2.setObjectName("contenutoLabel2")
             self.gridLayout_2.addWidget(self.contenutoLabel2, 1, 1, 1, 1)
+            contenuto=Thread(target=self.contVaso, args=[self.contenutoLabel2, name])
+            contenuto.start()
         self.gridLayout_2.addLayout(self.horizontalLayout_2, 9, 0, 1, 1)
         self.confermaLabel = QtWidgets.QLabel(self.temp_grid)
         self.confermaLabel.setText("")
@@ -473,6 +493,8 @@ class Ui_TempGUI(object):
         self.statoscrLabel = QtWidgets.QLabel(self.temp_grid)
         self.statoscrLabel.setObjectName("statoscrLabel")
         self.horizontalLayout_3.addWidget(self.statoscrLabel)
+        stvalv=Thread(target=self.statoValv, args=[self.statoLabel, self.statoscrLabel, name], daemon=True)
+        stvalv.start()
         self.statoLabel = QtWidgets.QLabel(self.temp_grid)
         self.statoLabel.setObjectName("statoLabel")
         self.horizontalLayout_3.addWidget(self.statoLabel)
@@ -482,35 +504,33 @@ class Ui_TempGUI(object):
         QtCore.QMetaObject.connectSlotsByName(TempGUI)
 
     def retranslateUi(self, TempGUI, name):
-        from threading import Thread
         _translate = QtCore.QCoreApplication.translate
         TempGUI.setWindowTitle(_translate("TempGUI", "'"+name+"'"))
         self.monitoraggioButton.setText(_translate("TempGUI", "Monitoraggio"))
         self.tempModLabel.setText(_translate("TempGUI", "Temperatura modificabile: "))
         self.tempAttLabel2.setText(_translate("TempGUI", "Temperatura '"+name+"':"))
         self.tempAttLabel1.setText(_translate("TempGUI", "*****"))
-        tempvin=Thread(target=self.tempRich, args=[self.tempAttLabel1, name], daemon=True)
-        tempvin.start()
         self.celsiusLabel1.setText(_translate("TempGUI", "°C"))
         self.celsiusLabel2.setText(_translate("TempGUI", "°C"))
         self.confermaButton.setText(_translate("TempGUI", "Conferma"))
         self.resetButton.setText(_translate("TempGUI", "Reset"))
         self.statoLabel.setText(_translate("TempGUI", "<html><head/><body><p><img src=\"gray.png\"/></p></body></html>"))
         self.statoscrLabel.setText(_translate("TempGUI", "off"))
-        stvalv=Thread(target=self.statoValv, args=[self.statoLabel, self.statoscrLabel, name], daemon=True)
-        stvalv.start()
         if name[0]=="V":
             self.quantitaButton.setText(_translate("TempGUI", "Quantità"))
             self.contenutoLabel1.setText(_translate("TempGUI", "Contenuto '"+name+"':"))
             self.contenutoLabel2.setText(_translate("TempGUI", "*****"))
-            contenuto=Thread(target=self.contVaso, args=[self.contenutoLabel2, name])
-            contenuto.start()
+
+    def closeEvent(self, event):
+        print(3456)
+        self.attivo=False
+        event.accept()
 
     def statoValv(self, statoLabel, statoscrLabel, name):
         import time as f
         import socket
         cod=userText+","+passwdText+",8,"+name
-        while True:
+        while self.attivo:
             try:
                 client8=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 client8.connect(("localhost",8282)) #!!!!!!
@@ -538,7 +558,7 @@ class Ui_TempGUI(object):
         import time as b
         import socket
         cod=userText+","+passwdText+",2,"+name
-        while True:
+        while self.attivo:
             try:
                 client2=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 client2.connect(("localhost",8282)) #!!!!!!
@@ -557,7 +577,7 @@ class Ui_TempGUI(object):
         import time as d
         import socket
         cod=userText+","+passwdText+",3,"+name
-        while True:
+        while self.attivo:
             try:
                 client3=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 client3.connect(("localhost",8282)) #!!!!!!
@@ -698,8 +718,10 @@ class Ui_TempGUI(object):
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    MainGUI = QtWidgets.QMainWindow()
+    # MainGUI = QtWidgets.QMainWindow()
+    # ui = Ui_MainGUI()
+    # ui.setupUi(MainGUI)
+    # MainGUI.showMaximized()
     ui = Ui_MainGUI()
-    ui.setupUi(MainGUI)
-    MainGUI.showMaximized()
     sys.exit(app.exec_())
+
