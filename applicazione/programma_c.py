@@ -6,14 +6,9 @@ class Ui_MainGUI(QtWidgets.QMainWindow):
         super(Ui_MainGUI, self).__init__()
         self.setupUi(self)
         self.showMaximized()
-        print(2345)
-
-    def closeEvent(self, event):
-        print(3456)
 
     def setupUi(self, MainGUI):
         MainGUI.setObjectName("MainGUI")
-        MainGUI.resize(600, 540)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("2_icon38.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainGUI.setWindowIcon(icon)
@@ -97,17 +92,29 @@ class Ui_MainGUI(QtWidgets.QMainWindow):
                 self.fallimentoLabel.setText("accesso corretto")
                 client0.close()
                 ui=Ui_CantinaGUI()
-                ui.setupUi(MainGUI)
+                self.close()
         except:
             self.fallimentoLabel.setText("errore connessione")
             client0.close()
 
 class Ui_CantinaGUI(QtWidgets.QMainWindow):
 
+    def __init__(self):
+        super(Ui_CantinaGUI, self).__init__()
+        self.setupUi(self)
+
+    def closeEvent(self, event):
+        try:
+            self.dataora.terminate()
+            self.tempest.terminate()
+        except:
+            print("cheavaca1")
+
     def setupUi(self, CantinaGUI):
         from threading import Thread
         CantinaGUI.setObjectName("CantinaGUI")
         CantinaGUI.setWindowModality(QtCore.Qt.WindowModal)
+        self.showMaximized()
         CantinaGUI.setEnabled(True)
         font = QtGui.QFont()
         font.setStyleStrategy(QtGui.QFont.PreferAntialias)
@@ -345,9 +352,6 @@ class Ui_CantinaGUI(QtWidgets.QMainWindow):
         self.vv9.setText(_translate("CantinaGUI", "v.v. 9"))
         self.tempestLabel.setText(_translate("CantinaGUI", "Temperatura esterna: *****°C"))
 
-    def closeEvent(self, event):
-        print(3456)
-    
     def ora(self):
         import datetime
         import time as c
@@ -389,17 +393,28 @@ class Ui_CantinaGUI(QtWidgets.QMainWindow):
                 sendr="Vaso vinario "+sendr[2]+sendr[3]
             except:
                 sendr="Vaso vinario "+sendr[2]
-        self.tempwin=QtWidgets.QMainWindow()
-        self.ui=Ui_TempGUI()
-        self.ui.setupUi(self.tempwin, sendr)
-        self.tempwin.show()
+        self.ui=Ui_TempGUI(sendr)
 
-class Ui_TempGUI(object):
+class Ui_TempGUI(QtWidgets.QMainWindow):
+
+    def __init__(self, sendr):
+        super(Ui_TempGUI, self).__init__()
+        self.setupUi(self, sendr)
+
+    def closeEvent(self, event):
+        try:
+            self.tempvin.terminate()
+            self.contenuto.terminate()
+            self.stvalv.terminate()
+        except:
+            print("cheavaca2")
+
     def setupUi(self, TempGUI, name):
         from threading import Thread
         self.attivo=True
         TempGUI.setObjectName("TempGUI")
         TempGUI.resize(464, 387)
+        self.show()
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("2_icon38.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         TempGUI.setWindowIcon(icon)
@@ -520,11 +535,6 @@ class Ui_TempGUI(object):
             self.quantitaButton.setText(_translate("TempGUI", "Quantità"))
             self.contenutoLabel1.setText(_translate("TempGUI", "Contenuto '"+name+"':"))
             self.contenutoLabel2.setText(_translate("TempGUI", "*****"))
-
-    def closeEvent(self, event):
-        print(3456)
-        self.attivo=False
-        event.accept()
 
     def statoValv(self, statoLabel, statoscrLabel, name):
         import time as f
@@ -718,10 +728,5 @@ class Ui_TempGUI(object):
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    # MainGUI = QtWidgets.QMainWindow()
-    # ui = Ui_MainGUI()
-    # ui.setupUi(MainGUI)
-    # MainGUI.showMaximized()
     ui = Ui_MainGUI()
     sys.exit(app.exec_())
-

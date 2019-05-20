@@ -9,7 +9,7 @@ while True:
         connClient, ipClient = s.accept()
         cred=connClient.recv(1024).decode() #0 username, 1 password, 2 codIstruzione, 3&&+ info aggiuntive
         cod=cred.split(",")
-        if int(cod[2])==0:  #login
+        if int(cod[2])==0:      #login
             print(cod)
             try:
                 mydb0=mys.connect(host="192.168.5.33", user="root", passwd="quinta", database="Login")  #credenziali mysql
@@ -23,7 +23,7 @@ while True:
                 mydb0.close()
             except Exception as e:
                 print(e)
-                connClient.send("errore_connessione".encode())
+                connClient.send("credenziali_errate".encode())
                 mydb0.close()
         elif int(cod[2])==1:    #temperatura esterna
             print(cod)
