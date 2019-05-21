@@ -1,13 +1,13 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-class Ui_MainGUI(QtWidgets.QMainWindow):
+class Ui_MainGUI(QtWidgets.QMainWindow):                            #classe mainWindow
 
     def __init__(self):
         super(Ui_MainGUI, self).__init__()
         self.setupUi(self)
         self.showMaximized()
 
-    def setupUi(self, MainGUI):
+    def setupUi(self, MainGUI):                                     #grafica login
         MainGUI.setObjectName("MainGUI")
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("2_icon38.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -71,7 +71,7 @@ class Ui_MainGUI(QtWidgets.QMainWindow):
         self.usernameLabel.setText(_translate("MainGUI", "username:"))
         self.inviaButton.setText(_translate("MainGUI", "INVIA"))
 
-    def invia(self,fallimento):
+    def invia(self,fallimento):                                     #funzione invio credenziali login
         global userText, passwdText
         import socket
         client0=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -91,39 +91,37 @@ class Ui_MainGUI(QtWidgets.QMainWindow):
             elif risp=="accesso_corretto":
                 self.fallimentoLabel.setText("accesso corretto")
                 client0.close()
-                ui=Ui_CantinaGUI()
-                self.close()
+                self.setupUiSec(self)
         except:
             self.fallimentoLabel.setText("errore connessione")
             client0.close()
 
-class Ui_CantinaGUI(QtWidgets.QMainWindow):
+    def closeEvent(self, event):                                    #evento di chiusura della main window
+        try:
+            threadMainPace=False
+            app.closeAllWindows()
+            threadSecondPace=False
+        except:
+            pass
 
-    def __init__(self):
-        super(Ui_CantinaGUI, self).__init__()
-        self.setupUi(self)
-
-    def closeEvent(self, event):
-        threadMainPace=False
-
-    def setupUi(self, CantinaGUI):
+    def setupUiSec(self, MainGUI):                                  #grafica di refresh post-login (lista)
         from threading import Thread
         threadMainPace=True
-        CantinaGUI.setObjectName("CantinaGUI")
-        CantinaGUI.setWindowModality(QtCore.Qt.WindowModal)
+        MainGUI.setObjectName("MainGUI")
+        MainGUI.setWindowModality(QtCore.Qt.WindowModal)
         self.showMaximized()
-        CantinaGUI.setEnabled(True)
+        MainGUI.setEnabled(True)
         font = QtGui.QFont()
         font.setStyleStrategy(QtGui.QFont.PreferAntialias)
-        CantinaGUI.setFont(font)
+        MainGUI.setFont(font)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("2_grappoloicon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        CantinaGUI.setWindowIcon(icon)
-        CantinaGUI.setAutoFillBackground(True)
-        CantinaGUI.setStyleSheet("")
-        CantinaGUI.setAnimated(True)
-        CantinaGUI.setUnifiedTitleAndToolBarOnMac(True)
-        self.centralwidget = QtWidgets.QWidget(CantinaGUI)
+        MainGUI.setWindowIcon(icon)
+        MainGUI.setAutoFillBackground(True)
+        MainGUI.setStyleSheet("")
+        MainGUI.setAnimated(True)
+        MainGUI.setUnifiedTitleAndToolBarOnMac(True)
+        self.centralwidget = QtWidgets.QWidget(MainGUI)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.centralwidget)
         self.gridLayout_2.setObjectName("gridLayout_2")
@@ -306,50 +304,50 @@ class Ui_CantinaGUI(QtWidgets.QMainWindow):
         tempest=Thread(target=self.tempesterna, args=[self.tempestLabel, lambda:threadMainPace], daemon=True)
         tempest.start()
         self.gridLayout_2.addLayout(self.top_grid, 0, 0, 1, 1)
-        CantinaGUI.setCentralWidget(self.centralwidget)
-        self.retranslateUi(CantinaGUI)
-        QtCore.QMetaObject.connectSlotsByName(CantinaGUI)
+        MainGUI.setCentralWidget(self.centralwidget)
+        self.retranslateUiSec(MainGUI)
+        QtCore.QMetaObject.connectSlotsByName(MainGUI)
 
-    def retranslateUi(self, CantinaGUI):
+    def retranslateUiSec(self, MainGUI):
         _translate = QtCore.QCoreApplication.translate
-        CantinaGUI.setWindowTitle(_translate("CantinaGUI", "MAPPA VASI VINARI"))
-        self.mappacantLabel.setText(_translate("CantinaGUI", "<html><head/><body><p><img src=\"3_Planimetria_Botti.png\"/></p></body></html>"))
-        self.vv16.setText(_translate("CantinaGUI", "v.v. 16"))
-        self.locale2.setText(_translate("CantinaGUI", "LOCALE 2"))
-        self.vv14.setText(_translate("CantinaGUI", "v.v. 14"))
-        self.vv22.setText(_translate("CantinaGUI", "v.v. 22"))
-        self.vv33.setText(_translate("CantinaGUI", "v.v. 33"))
-        self.vv7.setText(_translate("CantinaGUI", "v.v. 7"))
-        self.vv32.setText(_translate("CantinaGUI", "v.v. 32"))
-        self.vv19.setText(_translate("CantinaGUI", "v.v. 19"))
-        self.vv15.setText(_translate("CantinaGUI", "v.v. 15"))
-        self.vv27.setText(_translate("CantinaGUI", "v.v. 27"))
-        self.vv25.setText(_translate("CantinaGUI", "v.v. 25"))
-        self.vv23.setText(_translate("CantinaGUI", "v.v. 23"))
-        self.vv8.setText(_translate("CantinaGUI", "v.v. 8"))
-        self.vv29.setText(_translate("CantinaGUI", "v.v. 29"))
-        self.vv30.setText(_translate("CantinaGUI", "v.v. 30"))
-        self.vv17.setText(_translate("CantinaGUI", "v.v. 17"))
-        self.locale3.setText(_translate("CantinaGUI", "LOCALE 3"))
-        self.vv28.setText(_translate("CantinaGUI", "v.v. 28"))
-        self.vv24.setText(_translate("CantinaGUI", "v.v. 24"))
-        self.vv20.setText(_translate("CantinaGUI", "v.v. 20"))
-        self.vv18.setText(_translate("CantinaGUI", "v.v. 18"))
-        self.vv21.setText(_translate("CantinaGUI", "v.v. 21"))
-        self.vv10.setText(_translate("CantinaGUI", "v.v. 10"))
-        self.vv31.setText(_translate("CantinaGUI", "v.v. 31"))
-        self.vv26.setText(_translate("CantinaGUI", "v.v. 26"))
-        self.vv11.setText(_translate("CantinaGUI", "v.v. 11"))
-        self.vv12.setText(_translate("CantinaGUI", "v.v. 12"))
-        self.vv13.setText(_translate("CantinaGUI", "v.v. 13"))
-        self.vv6.setText(_translate("CantinaGUI", "v.v. 6"))
-        self.vv4.setText(_translate("CantinaGUI", "v.v. 4"))
-        self.vv5.setText(_translate("CantinaGUI", "v.v. 5"))
-        self.locale1.setText(_translate("CantinaGUI", "LOCALE 1"))
-        self.vv9.setText(_translate("CantinaGUI", "v.v. 9"))
-        self.tempestLabel.setText(_translate("CantinaGUI", "Temperatura esterna: *****°C"))
+        MainGUI.setWindowTitle(_translate("MainGUI", "MAPPA VASI VINARI"))
+        self.mappacantLabel.setText(_translate("MainGUI", "<html><head/><body><p><img src=\"3_Planimetria_Botti.png\"/></p></body></html>"))
+        self.vv16.setText(_translate("MainGUI", "v.v. 16"))
+        self.locale2.setText(_translate("MainGUI", "LOCALE 2"))
+        self.vv14.setText(_translate("MainGUI", "v.v. 14"))
+        self.vv22.setText(_translate("MainGUI", "v.v. 22"))
+        self.vv33.setText(_translate("MainGUI", "v.v. 33"))
+        self.vv7.setText(_translate("MainGUI", "v.v. 7"))
+        self.vv32.setText(_translate("MainGUI", "v.v. 32"))
+        self.vv19.setText(_translate("MainGUI", "v.v. 19"))
+        self.vv15.setText(_translate("MainGUI", "v.v. 15"))
+        self.vv27.setText(_translate("MainGUI", "v.v. 27"))
+        self.vv25.setText(_translate("MainGUI", "v.v. 25"))
+        self.vv23.setText(_translate("MainGUI", "v.v. 23"))
+        self.vv8.setText(_translate("MainGUI", "v.v. 8"))
+        self.vv29.setText(_translate("MainGUI", "v.v. 29"))
+        self.vv30.setText(_translate("MainGUI", "v.v. 30"))
+        self.vv17.setText(_translate("MainGUI", "v.v. 17"))
+        self.locale3.setText(_translate("MainGUI", "LOCALE 3"))
+        self.vv28.setText(_translate("MainGUI", "v.v. 28"))
+        self.vv24.setText(_translate("MainGUI", "v.v. 24"))
+        self.vv20.setText(_translate("MainGUI", "v.v. 20"))
+        self.vv18.setText(_translate("MainGUI", "v.v. 18"))
+        self.vv21.setText(_translate("MainGUI", "v.v. 21"))
+        self.vv10.setText(_translate("MainGUI", "v.v. 10"))
+        self.vv31.setText(_translate("MainGUI", "v.v. 31"))
+        self.vv26.setText(_translate("MainGUI", "v.v. 26"))
+        self.vv11.setText(_translate("MainGUI", "v.v. 11"))
+        self.vv12.setText(_translate("MainGUI", "v.v. 12"))
+        self.vv13.setText(_translate("MainGUI", "v.v. 13"))
+        self.vv6.setText(_translate("MainGUI", "v.v. 6"))
+        self.vv4.setText(_translate("MainGUI", "v.v. 4"))
+        self.vv5.setText(_translate("MainGUI", "v.v. 5"))
+        self.locale1.setText(_translate("MainGUI", "LOCALE 1"))
+        self.vv9.setText(_translate("MainGUI", "v.v. 9"))
+        self.tempestLabel.setText(_translate("MainGUI", "Temperatura esterna: *****°C"))
 
-    def ora(self, exit):
+    def ora(self, exit):                                            #funzione thread di ora e data
         import datetime
         import time as c
         while exit():
@@ -361,7 +359,7 @@ class Ui_CantinaGUI(QtWidgets.QMainWindow):
                 self.dataoraTimeEdit.setDateTime(QtCore.QDateTime(QtCore.QDate('**', '**', '**'), QtCore.QTime('**', '**', '**')))
                 c.sleep(1)
 
-    def tempesterna(self, tempestLabel, exit):
+    def tempesterna(self, tempestLabel, exit):                      #funzione thread temperatura esterna
         import time as a
         import socket
         cred=userText+","+passwdText+",1"
@@ -381,7 +379,7 @@ class Ui_CantinaGUI(QtWidgets.QMainWindow):
                 client1.close()
                 a.sleep(60)
 
-    def functemp(self):
+    def functemp(self):                                             #funzione apertura window b/l
         sendr=self.sender().objectName()
         if sendr[0]=="l":
             sendr="Locale "+sendr[6]
@@ -398,10 +396,10 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
         super(Ui_TempGUI, self).__init__()
         self.setupUi(self, sendr)
 
-    def closeEvent(self, event):
+    def closeEvent(self, event):                                    #evento di chiusura window b/l
         threadSecondPace=False
 
-    def setupUi(self, TempGUI, name):
+    def setupUi(self, TempGUI, name):                               #grafica window b/l
         from threading import Thread
         threadSecondPace=True
         TempGUI.setObjectName("TempGUI")
@@ -528,7 +526,7 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
             self.contenutoLabel1.setText(_translate("TempGUI", "Contenuto '"+name+"':"))
             self.contenutoLabel2.setText(_translate("TempGUI", "*****"))
 
-    def statoValv(self, statoLabel, statoscrLabel, name, exitS):
+    def statoValv(self, statoLabel, statoscrLabel, name, exitS):    #funzione thread stato valvola
         import time as f
         import socket
         cod=userText+","+passwdText+",8,"+name
@@ -556,7 +554,7 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
                 client8.close()
             f.sleep(20)
 
-    def tempRich(self, tempAttLabel1, name, exitS):
+    def tempRich(self, tempAttLabel1, name, exitS):                 #funzione thread temperatura b/l
         import time as b
         import socket
         cod=userText+","+passwdText+",2,"+name
@@ -575,7 +573,7 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
                 client2.close()
             b.sleep(20)
         
-    def contVaso(self, contenutoLabel2, name, exitS):
+    def contVaso(self, contenutoLabel2, name, exitS):               #funzione thread contenuto botte
         import time as d
         import socket
         cod=userText+","+passwdText+",3,"+name
@@ -594,7 +592,7 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
                 client3.close()
             d.sleep(10)
 
-    def setDef(self, tempSpin, name):
+    def setDef(self, tempSpin, name):                               #funzione set default value spinbox
         import socket
         cod=userText+","+passwdText+",4,"+name
         try:
@@ -610,7 +608,7 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
             self.tempSpin.setValue(float(risp))
             client4.close()
     
-    def setTemp(self, tempSpin, name, confermaLabel):
+    def setTemp(self, tempSpin, name, confermaLabel):               #funzione set value spinbox
         import socket
         valore=self.tempSpin.value()
         cod=userText+","+passwdText+",5,"+name+","+str(valore)
@@ -632,12 +630,12 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
             client5.close()
             self.setDef(tempSpin, name)
 
-    def mexconf(self, confermaLabel):
+    def mexconf(self, confermaLabel):                               #funzione thread messaggio conferma
         import time as e
         e.sleep(10)
         self.confermaLabel.setText("")
 
-    def graficoTemp(self, name):
+    def graficoTemp(self, name):                                    #funzione grafico temperature
         cod=userText+","+passwdText+",6,"+name
         try:
             import socket
@@ -653,8 +651,6 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
             misure=dati[0].split(",")
             quando=dati[1].split(",")
             misure=[float(valore) for valore in misure]
-            print(misure)
-            print(quando)
             y=misure[::-1]
             quando=quando[::-1]
             x=[dateutil.parser.parse(q) for q in quando]
@@ -669,6 +665,7 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
             plt.grid(True)
             plt.yticks(y)
             plt.xticks(x)
+            plt.gcf().canvas.set_window_title("Grafico "+name)
             plt.show()   
         except RuntimeError:
             pass
@@ -677,7 +674,7 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
             self.confermaLabel.setText("errore generazione grafico")
             client6.close()
 
-    def graficoQuant(self, name):
+    def graficoQuant(self, name):                                   #funzione grafico volumi
         cod=userText+","+passwdText+",7,"+name
         try:
             import socket
@@ -693,8 +690,6 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
             misure=dati[0].split(",")
             quando=dati[1].split(",")
             misure=[float(valore) for valore in misure]
-            print(misure)
-            print(quando)
             y=misure[::-1]
             quando=quando[::-1]
             x=[dateutil.parser.parse(q) for q in quando]
@@ -709,6 +704,7 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
             plt.grid(True)
             plt.yticks(y)
             plt.xticks(x)
+            plt.gcf().canvas.set_window_title("Grafico "+name)
             plt.show()
         except RuntimeError:
             pass
