@@ -112,9 +112,9 @@ while True:
                 if cod[0]=="Vaso":
                     mydb5=mys.connect(host="192.168.5.33", user="root", passwd="quinta", database="Cantina") #credenziali mysql
                     myc5=mydb5.cursor()
-                    myc5.execute("select idBotte,contenuto,tempBotte,tempsetBotte from Botte where idBotte="+str(cod[2]))
+                    myc5.execute("select idBotte,contenuto,tempBotte,tempsetBotte,volume from Botte where idBotte="+str(cod[2]))
                     record=myc5.fetchone()
-                    myc5.execute("insert into StoricoBotte(dataAggB,contenutoAggB,tempAggB,tempsetAggB,idBotte)values(now(),'"+str(record[1])+"',"+str(record[2])+","+str(record[3])+","+str(record[0])+")")
+                    myc5.execute("insert into StoricoBotte(dataAggB,contenutoAggB,tempAggB,tempsetAggB,volumeAggB,idBotte,flagContenuto,flagTemperatura,flagTemperaturaSet,flagVolume)values(now(),'"+str(record[1])+"',"+str(record[2])+","+str(record[3])+","+str(record[4])+","+str(record[0])+",0,0,1,0)")
                     myc5.execute("update Botte set tempsetBotte="+str(valore)+" where idBotte="+str(cod[2]))
                     mydb5.commit()
                 else:
@@ -122,7 +122,7 @@ while True:
                     myc5=mydb5.cursor()
                     myc5.execute("select idLocale,tempLocale,tempsetLocale from Locale where idLocale="+str(cod[1]))
                     record=myc5.fetchone()
-                    myc5.execute("insert into StoricoLocale(dataAggL,tempAggL,tempsetAggL,idLocale)values(now(),"+str(record[1])+","+str(record[2])+","+str(record[0])+")")
+                    myc5.execute("insert into StoricoLocale(dataAggL,tempAggL,tempsetAggL,idLocale,flagTemperatura,flagTemperaturaSet)values(now(),"+str(record[1])+","+str(record[2])+","+str(record[0])+",0,1)")
                     myc5.execute("update Locale set tempsetLocale="+str(valore)+" where idLocale="+str(cod[1]))
                     mydb5.commit()
                 connClient.send("temperatura aggiornata".encode())

@@ -104,14 +104,11 @@ class Ui_CantinaGUI(QtWidgets.QMainWindow):
         self.setupUi(self)
 
     def closeEvent(self, event):
-        try:
-            self.dataora.terminate()
-            self.tempest.terminate()
-        except:
-            print("cheavaca1")
+        threadMainPace=False
 
     def setupUi(self, CantinaGUI):
         from threading import Thread
+        threadMainPace=True
         CantinaGUI.setObjectName("CantinaGUI")
         CantinaGUI.setWindowModality(QtCore.Qt.WindowModal)
         self.showMaximized()
@@ -301,12 +298,12 @@ class Ui_CantinaGUI(QtWidgets.QMainWindow):
         self.dataoraTimeEdit.setMaximumDate(QtCore.QDate(10000, 12, 31))
         self.dataoraTimeEdit.setObjectName("dataoraTimeEdit")
         self.top_grid.addWidget(self.dataoraTimeEdit, 0, 1, 1, 1)
-        dataora=Thread(target=self.ora, daemon=True)
+        dataora=Thread(target=self.ora, args=[lambda: threadMainPace], daemon=True)
         dataora.start()
         self.tempestLabel = QtWidgets.QLabel(self.centralwidget)
         self.tempestLabel.setObjectName("tempestLabel")
         self.top_grid.addWidget(self.tempestLabel, 0, 0, 1, 1)
-        tempest=Thread(target=self.tempesterna, args=[self.tempestLabel], daemon=True)    #temperatura esterna aggiornata
+        tempest=Thread(target=self.tempesterna, args=[self.tempestLabel, lambda:threadMainPace], daemon=True)
         tempest.start()
         self.gridLayout_2.addLayout(self.top_grid, 0, 0, 1, 1)
         CantinaGUI.setCentralWidget(self.centralwidget)
@@ -352,10 +349,10 @@ class Ui_CantinaGUI(QtWidgets.QMainWindow):
         self.vv9.setText(_translate("CantinaGUI", "v.v. 9"))
         self.tempestLabel.setText(_translate("CantinaGUI", "Temperatura esterna: *****°C"))
 
-    def ora(self):
+    def ora(self, exit):
         import datetime
         import time as c
-        while True:
+        while exit():
             try:
                 tempo=datetime.datetime.now()
                 self.dataoraTimeEdit.setDateTime(QtCore.QDateTime(QtCore.QDate(tempo.year, tempo.month, tempo.day), QtCore.QTime(tempo.hour, tempo.minute, tempo.second)))
@@ -364,11 +361,11 @@ class Ui_CantinaGUI(QtWidgets.QMainWindow):
                 self.dataoraTimeEdit.setDateTime(QtCore.QDateTime(QtCore.QDate('**', '**', '**'), QtCore.QTime('**', '**', '**')))
                 c.sleep(1)
 
-    def tempesterna(self, tempestLabel):
+    def tempesterna(self, tempestLabel, exit):
         import time as a
         import socket
         cred=userText+","+passwdText+",1"
-        while True:
+        while exit():
             try:
                 client1=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 client1.connect(("localhost",8282)) #indirizzo server 
@@ -393,7 +390,7 @@ class Ui_CantinaGUI(QtWidgets.QMainWindow):
                 sendr="Vaso vinario "+sendr[2]+sendr[3]
             except:
                 sendr="Vaso vinario "+sendr[2]
-        self.ui=Ui_TempGUI(sendr)
+        ui=Ui_TempGUI(sendr)
 
 class Ui_TempGUI(QtWidgets.QMainWindow):
 
@@ -402,16 +399,11 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
         self.setupUi(self, sendr)
 
     def closeEvent(self, event):
-        try:
-            self.tempvin.terminate()
-            self.contenuto.terminate()
-            self.stvalv.terminate()
-        except:
-            print("cheavaca2")
+        threadSecondPace=False
 
     def setupUi(self, TempGUI, name):
         from threading import Thread
-        self.attivo=True
+        threadSecondPace=True
         TempGUI.setObjectName("TempGUI")
         TempGUI.resize(464, 387)
         self.show()
@@ -437,7 +429,7 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
         self.tempAttLabel1.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.tempAttLabel1.setObjectName("tempAttLabel1")
         self.gridLayout_2.addWidget(self.tempAttLabel1, 2, 1, 1, 1)
-        tempvin=Thread(target=self.tempRich, args=[self.tempAttLabel1, name], daemon=True)
+        tempvin=Thread(target=self.tempRich, args=[self.tempAttLabel1, name, lambda: threadSecondPace], daemon=True)
         tempvin.start()
         self.celsiusLabel1 = QtWidgets.QLabel(self.temp_grid)
         self.celsiusLabel1.setObjectName("celsiusLabel1")
@@ -496,7 +488,7 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
             self.contenutoLabel2.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
             self.contenutoLabel2.setObjectName("contenutoLabel2")
             self.gridLayout_2.addWidget(self.contenutoLabel2, 1, 1, 1, 1)
-            contenuto=Thread(target=self.contVaso, args=[self.contenutoLabel2, name])
+            contenuto=Thread(target=self.contVaso, args=[self.contenutoLabel2, name, lambda: threadSecondPace], daemon=True)
             contenuto.start()
         self.gridLayout_2.addLayout(self.horizontalLayout_2, 9, 0, 1, 1)
         self.confermaLabel = QtWidgets.QLabel(self.temp_grid)
@@ -508,7 +500,7 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
         self.statoscrLabel = QtWidgets.QLabel(self.temp_grid)
         self.statoscrLabel.setObjectName("statoscrLabel")
         self.horizontalLayout_3.addWidget(self.statoscrLabel)
-        stvalv=Thread(target=self.statoValv, args=[self.statoLabel, self.statoscrLabel, name], daemon=True)
+        stvalv=Thread(target=self.statoValv, args=[self.statoLabel, self.statoscrLabel, name, lambda: threadSecondPace], daemon=True)
         stvalv.start()
         self.statoLabel = QtWidgets.QLabel(self.temp_grid)
         self.statoLabel.setObjectName("statoLabel")
@@ -536,11 +528,11 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
             self.contenutoLabel1.setText(_translate("TempGUI", "Contenuto '"+name+"':"))
             self.contenutoLabel2.setText(_translate("TempGUI", "*****"))
 
-    def statoValv(self, statoLabel, statoscrLabel, name):
+    def statoValv(self, statoLabel, statoscrLabel, name, exitS):
         import time as f
         import socket
         cod=userText+","+passwdText+",8,"+name
-        while self.attivo:
+        while exitS():
             try:
                 client8=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 client8.connect(("localhost",8282)) #!!!!!!
@@ -564,11 +556,11 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
                 client8.close()
             f.sleep(20)
 
-    def tempRich(self, tempAttLabel1, name):
+    def tempRich(self, tempAttLabel1, name, exitS):
         import time as b
         import socket
         cod=userText+","+passwdText+",2,"+name
-        while self.attivo:
+        while exitS():
             try:
                 client2=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 client2.connect(("localhost",8282)) #!!!!!!
@@ -583,11 +575,11 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
                 client2.close()
             b.sleep(20)
         
-    def contVaso(self, contenutoLabel2, name):
+    def contVaso(self, contenutoLabel2, name, exitS):
         import time as d
         import socket
         cod=userText+","+passwdText+",3,"+name
-        while self.attivo:
+        while exitS():
             try:
                 client3=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 client3.connect(("localhost",8282)) #!!!!!!
