@@ -1,0 +1,39 @@
+
+This file lists modules PyInstaller was not able to find. This does not
+necessarily mean this module is required for running you program. Python and
+Python 3rd-party packages include a lot of conditional or optional module. For
+example the module 'ntpath' only exists on Windows, whereas the module
+'posixpath' only exists on Posix systems.
+
+Types if import:
+* top-level: imported at the top-level - look at these first
+* conditional: imported within an if-statement
+* delayed: imported from within a function
+* optional: imported within a try-except-statement
+
+IMPORTANT: Do NOT post this list to the issue-tracker. Use it as a basis for
+           yourself tracking down the missing module. Thanks!
+
+missing module named org - imported by pickle (optional), /home/alunno5ai/Scrivania/App/applicazione/server.py (top-level)
+excluded module named _frozen_importlib - imported by importlib (optional), importlib.abc (optional), /home/alunno5ai/Scrivania/App/applicazione/server.py (top-level)
+missing module named _frozen_importlib_external - imported by importlib._bootstrap (delayed), importlib (optional), importlib.abc (optional), /home/alunno5ai/Scrivania/App/applicazione/server.py (top-level)
+missing module named _winreg - imported by platform (delayed, optional), /home/alunno5ai/Scrivania/App/applicazione/server.py (top-level)
+missing module named _scproxy - imported by urllib.request (conditional)
+missing module named java - imported by platform (delayed), /home/alunno5ai/Scrivania/App/applicazione/server.py (top-level)
+missing module named 'java.lang' - imported by platform (delayed, optional), /home/alunno5ai/Scrivania/App/applicazione/server.py (top-level), xml.sax._exceptions (conditional)
+missing module named vms_lib - imported by platform (delayed, conditional, optional), /home/alunno5ai/Scrivania/App/applicazione/server.py (top-level)
+missing module named winreg - imported by platform (delayed, optional), mimetypes (optional), urllib.request (delayed, conditional, optional), /home/alunno5ai/Scrivania/App/applicazione/server.py (top-level)
+missing module named nt - imported by os (conditional, optional), shutil (conditional), ntpath (conditional, optional), /home/alunno5ai/Scrivania/App/applicazione/server.py (top-level)
+missing module named msvcrt - imported by subprocess (conditional), getpass (optional), /home/alunno5ai/Scrivania/App/applicazione/server.py (top-level)
+missing module named _winapi - imported by subprocess (conditional), /home/alunno5ai/Scrivania/App/applicazione/server.py (top-level)
+missing module named _dummy_threading - imported by dummy_threading (optional), /home/alunno5ai/Scrivania/App/applicazione/server.py (top-level)
+missing module named 'org.python' - imported by copy (optional), /home/alunno5ai/Scrivania/App/applicazione/server.py (top-level), xml.sax (delayed, conditional)
+missing module named httplib - imported by mysql.connector.fabric.connection (conditional, optional)
+missing module named urllib2 - imported by mysql.connector.fabric.connection (optional)
+missing module named xmlrpclib - imported by mysql.connector.fabric.connection (optional)
+missing module named 'ctypes.macholib' - imported by ctypes.util (conditional)
+missing module named netbios - imported by uuid (delayed)
+missing module named win32wnet - imported by uuid (delayed)
+missing module named Queue - imported by mysql.connector.pooling (optional)
+missing module named ConfigParser - imported by mysql.connector.optionfiles (conditional)
+missing module named _mysql_connector - imported by mysql.connector (optional), mysql.connector.connection_cext (optional), mysql.connector.cursor_cext (top-level)
