@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="sfondo">
+    <file>2_icon38Server.png</file>
     <file>red.png</file>
     <file>green.png</file>
     <file>gray.png</file>
