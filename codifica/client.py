@@ -99,8 +99,8 @@ class Ui_MainGUI(QtWidgets.QMainWindow):                            #classe main
     def closeEvent(self, event):                                    #evento di chiusura della main window
         try:
             threadMainPace=False
-            app.closeAllWindows()
             threadSecondPace=False
+            app.closeAllWindows()
         except:
             pass
 
