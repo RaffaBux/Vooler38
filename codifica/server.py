@@ -16,11 +16,10 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
 
     def setupUi(self, Server):
         from threading import Thread
-        global listaLabel
-        listaLabel=[]
         threadMainPace=True
+        listaLabel=[]
         Server.setObjectName("Server")
-        Server.resize(564, 354)
+        Server.resize(564, 265)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("2_icon38Server.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Server.setWindowIcon(icon)
@@ -32,62 +31,140 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
         self.verticalLayout.setObjectName("verticalLayout")
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.StatoServerLabel = QtWidgets.QLabel(self.centralwidget)
-        self.StatoServerLabel.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.StatoServerLabel.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
-        self.StatoServerLabel.setObjectName("StatoServerLabel")
-        self.horizontalLayout.addWidget(self.StatoServerLabel)
-        self.StatoLabel = QtWidgets.QLabel(self.centralwidget)
-        self.StatoLabel.setObjectName("StatoLabel")
-        self.horizontalLayout.addWidget(self.StatoLabel)
-        self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
-        self.label.setObjectName("label")
-        self.horizontalLayout.addWidget(self.label)
+        self.statoServerLabel = QtWidgets.QLabel(self.centralwidget)
+        self.statoServerLabel.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.statoServerLabel.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.statoServerLabel.setObjectName("statoServerLabel")
+        self.horizontalLayout.addWidget(self.statoServerLabel)
+        self.statoLabel = QtWidgets.QLabel(self.centralwidget)
+        self.statoLabel.setObjectName("statoLabel")
+        self.horizontalLayout.addWidget(self.statoLabel)
+        self.imgLabel = QtWidgets.QLabel(self.centralwidget)
+        self.imgLabel.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.imgLabel.setObjectName("imgLabel")
+        self.horizontalLayout.addWidget(self.imgLabel)
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.scrollArea = QtWidgets.QScrollArea(self.centralwidget)
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollContent = QtWidgets.QWidget()
-        self.scrollContent.setGeometry(QtCore.QRect(0, 0, 542, 300))
+        self.scrollContent.setGeometry(QtCore.QRect(0, 0, 529, 472))
         self.scrollContent.setObjectName("scrollContent")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.scrollContent)
         self.gridLayout_2.setObjectName("gridLayout_2")
-        self.AggLabel = QtWidgets.QLabel(self.scrollContent)
-        self.AggLabel.setObjectName("AggLabel")
-        self.gridLayout_2.addWidget(self.AggLabel, 0, 0, 1, 1)
-        listaLabel.append(self.AggLabel)
+        self.label0 = QtWidgets.QLabel(self.scrollContent)
+        self.label0.setObjectName("label0")
+        self.gridLayout_2.addWidget(self.label0, 0, 0, 1, 1)
+        listaLabel.append(self.label0)
+        self.label1 = QtWidgets.QLabel(self.scrollContent)
+        self.label1.setObjectName("label1")
+        self.gridLayout_2.addWidget(self.label1, 1, 0, 1, 1)
+        listaLabel.append(self.label1)
+        self.label2 = QtWidgets.QLabel(self.scrollContent)
+        self.label2.setObjectName("label2")
+        self.gridLayout_2.addWidget(self.label2, 2, 0, 1, 1)
+        listaLabel.append(self.label2)
+        self.label3 = QtWidgets.QLabel(self.scrollContent)
+        self.label3.setObjectName("label3")
+        self.gridLayout_2.addWidget(self.label3, 3, 0, 1, 1)
+        listaLabel.append(self.label3)
+        self.label4 = QtWidgets.QLabel(self.scrollContent)
+        self.label4.setObjectName("label4")
+        self.gridLayout_2.addWidget(self.label4, 4, 0, 1, 1)
+        listaLabel.append(self.label4)
+        self.label5 = QtWidgets.QLabel(self.scrollContent)
+        self.label5.setObjectName("label5")
+        self.gridLayout_2.addWidget(self.label5, 5, 0, 1, 1)
+        listaLabel.append(self.label5)
+        self.label6 = QtWidgets.QLabel(self.scrollContent)
+        self.label6.setObjectName("label6")
+        self.gridLayout_2.addWidget(self.label6, 6, 0, 1, 1)
+        listaLabel.append(self.label6)
+        self.label7 = QtWidgets.QLabel(self.scrollContent)
+        self.label7.setObjectName("label7")
+        self.gridLayout_2.addWidget(self.label7, 7, 0, 1, 1)
+        listaLabel.append(self.label7)
+        self.label8 = QtWidgets.QLabel(self.scrollContent)
+        self.label8.setObjectName("label8")
+        self.gridLayout_2.addWidget(self.label8, 8, 0, 1, 1)
+        listaLabel.append(self.label8)
+        self.label9 = QtWidgets.QLabel(self.scrollContent)
+        self.label9.setObjectName("label9")
+        self.gridLayout_2.addWidget(self.label9, 9, 0, 1, 1)
+        listaLabel.append(self.label9)
+        self.label10 = QtWidgets.QLabel(self.scrollContent)
+        self.label10.setObjectName("label10")
+        self.gridLayout_2.addWidget(self.label10, 10, 0, 1, 1)
+        listaLabel.append(self.label10)
+        self.label11 = QtWidgets.QLabel(self.scrollContent)
+        self.label11.setObjectName("label11")
+        self.gridLayout_2.addWidget(self.label11, 11, 0, 1, 1)
+        listaLabel.append(self.label11)
+        self.label12 = QtWidgets.QLabel(self.scrollContent)
+        self.label12.setObjectName("label12")
+        self.gridLayout_2.addWidget(self.label12, 12, 0, 1, 1)
+        listaLabel.append(self.label12)
+        self.label13 = QtWidgets.QLabel(self.scrollContent)
+        self.label13.setObjectName("label13")
+        self.gridLayout_2.addWidget(self.label13, 13, 0, 1, 1)
+        listaLabel.append(self.label13)
+        self.label14 = QtWidgets.QLabel(self.scrollContent)
+        self.label14.setObjectName("label14")
+        self.gridLayout_2.addWidget(self.label14, 14, 0, 1, 1)
+        listaLabel.append(self.label14)
+        self.label15 = QtWidgets.QLabel(self.scrollContent)
+        self.label15.setObjectName("label15")
+        self.gridLayout_2.addWidget(self.label15, 15, 0, 1, 1)
+        listaLabel.append(self.label15)
+        self.label16 = QtWidgets.QLabel(self.scrollContent)
+        self.label16.setObjectName("label16")
+        self.gridLayout_2.addWidget(self.label16, 16, 0, 1, 1)
+        listaLabel.append(self.label16)
+        self.label17 = QtWidgets.QLabel(self.scrollContent)
+        self.label17.setObjectName("label17")
+        self.gridLayout_2.addWidget(self.label17, 17, 0, 1, 1)
+        listaLabel.append(self.label17)
+        self.label18 = QtWidgets.QLabel(self.scrollContent)
+        self.label18.setObjectName("label18")
+        self.gridLayout_2.addWidget(self.label18, 18, 0, 1, 1)
+        listaLabel.append(self.label18)
+        self.label19 = QtWidgets.QLabel(self.scrollContent)
+        self.label19.setObjectName("label19")
+        self.gridLayout_2.addWidget(self.label19, 20, 0, 1, 1)
+        listaLabel.append(self.label19)
         self.scrollArea.setWidget(self.scrollContent)
         self.verticalLayout.addWidget(self.scrollArea)
         self.gridLayout.addLayout(self.verticalLayout, 0, 1, 1, 1)
         Server.setCentralWidget(self.centralwidget)
         self.retranslateUi(Server)
         QtCore.QMetaObject.connectSlotsByName(Server)
-        be=Thread(target=self.backend, args=[lambda: threadMainPace], daemon=True)
+        be=Thread(target=self.backend, args=[lambda: threadMainPace, listaLabel], daemon=True)
         be.start()
 
     def retranslateUi(self, Server):
         _translate = QtCore.QCoreApplication.translate
-        Server.setWindowTitle(_translate("Server", "MainWindow"))
-        self.StatoServerLabel.setText(_translate("Server", "Stato server:"))
-        self.StatoLabel.setText(_translate("Server", "***"))
-        self.label.setText(_translate("Server", "<html><head/><body><p><img src=\"gray.png\"/></p></body></html>"))
-        self.AggLabel.setText(_translate("Server", "DATA > CODICE"))
+        Server.setWindowTitle(_translate("Server", "Server"))
+        self.statoServerLabel.setText(_translate("Server", "Stato server:"))
+        self.statoLabel.setText(_translate("Server", "***"))
+        self.imgLabel.setText(_translate("Server", "<html><head/><body><p><img src=\"gray.png\"/></p></body></html>"))
 
-    def backend(self, exit):
+    def backend(self, exit, listaLabel):
         from threading import Thread
         import socket
         import mysql.connector as mys
         global ind
         ind=1
+        global listaDati
+        listaDati=[]
         s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.bind(("localhost", 8282)) #indirizzo macchina
+        s.bind(("192.168.5.212", 8282)) #indirizzo macchina
         s.listen(10)
         while exit():
             try:
                 connClient, ipClient = s.accept()
                 cred=connClient.recv(1024).decode() #0 username, 1 password, 2 codIstruzione, 3&&+ info aggiuntive
                 cod=cred.split(",")
+                arrDati=cod
                 if int(cod[2])==0:      #login
                     print(cod)
                     try:
@@ -327,29 +404,42 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
                         print(e)
                         connClient.send("*****".encode())
                         mydb8.close()
-                aggLabel=Thread(target=self.aggScroll, args=[self.listaLabel, ind, cod])
+                aggLabel=Thread(target=self.aggScroll, args=[listaDati, listaLabel, arrDati])
                 aggLabel.start()
             except KeyboardInterrupt:
                 s.close()
                 print("server chiuso")
                 break
-            except:
+            except Exception as e:
+                print(e) ### debug
                 pass
 
-    def aggScroll(self, lista, ind, cod):
-        from datetime import time, date
-        if ind>=20:
-            self.gridLayout_2.removeWidget(lista[0])
-            self.lista.pop(0)
-            ind-=1
-        oggi=date.today()
-        ora=time.now()
-        self.AggLabel = QtWidgets.QLabel(self.scrollContent)
-        self.AggLabel.setObjectName("AggLabel")
-        self.gridLayout_2.addWidget(self.AggLabel, 0, ind, 1, 1)
-        self.AggLabel.setText(str(oggi)+" "+str(ora)+" > ")
-        lista.append(self.AggLabel)
-        ind+=1
+    def aggScroll(self, listaDati, listaLabel, cod):
+        try:
+            global ind
+            print(ind) ### debug
+            import datetime
+            ora=datetime.datetime.now()
+            if ind>=19:
+                listaDati.pop(0)
+                print(listaDati) ### debug
+                ind-=1
+            istr=ora.strftime("%d-%m-%y")+" "+ora.strftime("%H-%M-%S")+" > "    #costruisco la stringa da appendere
+            for el in cod:
+                istr += " | "+str(el)
+            listaDati.append(istr)                                                #appendo la stringa
+            QtWidgets.QLabel(self.scrollContent)
+            # for c in range(len(listaDati)):                                     #setto testo nelle label
+            #     listaLabel[c].setText(listaDati[c])
+            ind+=1
+        except Exception as e:
+            print(e)   ### debug
+            pass
+
+    ### Lazza thing
+    def hello(self, content):
+        QtWidgets.QLabel(self.scrollContent).setText(content)
+        """ RESTART FROM HERE """
 
 if __name__ == "__main__":
     import sys
