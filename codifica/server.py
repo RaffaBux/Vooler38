@@ -2,6 +2,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Ui_ServerGUI(QtWidgets.QMainWindow):
 
+    scrolling_signal = QtCore.pyqtSignal([list]) ### debug
+
     def __init__(self):
         super(Ui_ServerGUI, self).__init__()
         self.setupUi(self)
@@ -52,93 +54,18 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
         self.scrollContent.setObjectName("scrollContent")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.scrollContent)
         self.gridLayout_2.setObjectName("gridLayout_2")
-        self.label0 = QtWidgets.QLabel(self.scrollContent)
-        self.label0.setObjectName("label0")
-        self.gridLayout_2.addWidget(self.label0, 0, 0, 1, 1)
-        listaLabel.append(self.label0)
-        self.label1 = QtWidgets.QLabel(self.scrollContent)
-        self.label1.setObjectName("label1")
-        self.gridLayout_2.addWidget(self.label1, 1, 0, 1, 1)
-        listaLabel.append(self.label1)
-        self.label2 = QtWidgets.QLabel(self.scrollContent)
-        self.label2.setObjectName("label2")
-        self.gridLayout_2.addWidget(self.label2, 2, 0, 1, 1)
-        listaLabel.append(self.label2)
-        self.label3 = QtWidgets.QLabel(self.scrollContent)
-        self.label3.setObjectName("label3")
-        self.gridLayout_2.addWidget(self.label3, 3, 0, 1, 1)
-        listaLabel.append(self.label3)
-        self.label4 = QtWidgets.QLabel(self.scrollContent)
-        self.label4.setObjectName("label4")
-        self.gridLayout_2.addWidget(self.label4, 4, 0, 1, 1)
-        listaLabel.append(self.label4)
-        self.label5 = QtWidgets.QLabel(self.scrollContent)
-        self.label5.setObjectName("label5")
-        self.gridLayout_2.addWidget(self.label5, 5, 0, 1, 1)
-        listaLabel.append(self.label5)
-        self.label6 = QtWidgets.QLabel(self.scrollContent)
-        self.label6.setObjectName("label6")
-        self.gridLayout_2.addWidget(self.label6, 6, 0, 1, 1)
-        listaLabel.append(self.label6)
-        self.label7 = QtWidgets.QLabel(self.scrollContent)
-        self.label7.setObjectName("label7")
-        self.gridLayout_2.addWidget(self.label7, 7, 0, 1, 1)
-        listaLabel.append(self.label7)
-        self.label8 = QtWidgets.QLabel(self.scrollContent)
-        self.label8.setObjectName("label8")
-        self.gridLayout_2.addWidget(self.label8, 8, 0, 1, 1)
-        listaLabel.append(self.label8)
-        self.label9 = QtWidgets.QLabel(self.scrollContent)
-        self.label9.setObjectName("label9")
-        self.gridLayout_2.addWidget(self.label9, 9, 0, 1, 1)
-        listaLabel.append(self.label9)
-        self.label10 = QtWidgets.QLabel(self.scrollContent)
-        self.label10.setObjectName("label10")
-        self.gridLayout_2.addWidget(self.label10, 10, 0, 1, 1)
-        listaLabel.append(self.label10)
-        self.label11 = QtWidgets.QLabel(self.scrollContent)
-        self.label11.setObjectName("label11")
-        self.gridLayout_2.addWidget(self.label11, 11, 0, 1, 1)
-        listaLabel.append(self.label11)
-        self.label12 = QtWidgets.QLabel(self.scrollContent)
-        self.label12.setObjectName("label12")
-        self.gridLayout_2.addWidget(self.label12, 12, 0, 1, 1)
-        listaLabel.append(self.label12)
-        self.label13 = QtWidgets.QLabel(self.scrollContent)
-        self.label13.setObjectName("label13")
-        self.gridLayout_2.addWidget(self.label13, 13, 0, 1, 1)
-        listaLabel.append(self.label13)
-        self.label14 = QtWidgets.QLabel(self.scrollContent)
-        self.label14.setObjectName("label14")
-        self.gridLayout_2.addWidget(self.label14, 14, 0, 1, 1)
-        listaLabel.append(self.label14)
-        self.label15 = QtWidgets.QLabel(self.scrollContent)
-        self.label15.setObjectName("label15")
-        self.gridLayout_2.addWidget(self.label15, 15, 0, 1, 1)
-        listaLabel.append(self.label15)
-        self.label16 = QtWidgets.QLabel(self.scrollContent)
-        self.label16.setObjectName("label16")
-        self.gridLayout_2.addWidget(self.label16, 16, 0, 1, 1)
-        listaLabel.append(self.label16)
-        self.label17 = QtWidgets.QLabel(self.scrollContent)
-        self.label17.setObjectName("label17")
-        self.gridLayout_2.addWidget(self.label17, 17, 0, 1, 1)
-        listaLabel.append(self.label17)
-        self.label18 = QtWidgets.QLabel(self.scrollContent)
-        self.label18.setObjectName("label18")
-        self.gridLayout_2.addWidget(self.label18, 18, 0, 1, 1)
-        listaLabel.append(self.label18)
-        self.label19 = QtWidgets.QLabel(self.scrollContent)
-        self.label19.setObjectName("label19")
-        self.gridLayout_2.addWidget(self.label19, 20, 0, 1, 1)
-        listaLabel.append(self.label19)
+        ### I've cut some things
+        # self.gridLayout_2.addWidget(self.label19, 20, 0, 1, 1)
+        # listaLabel.append(self.label19)
         self.scrollArea.setWidget(self.scrollContent)
         self.verticalLayout.addWidget(self.scrollArea)
         self.gridLayout.addLayout(self.verticalLayout, 0, 1, 1, 1)
         Server.setCentralWidget(self.centralwidget)
         self.retranslateUi(Server)
         QtCore.QMetaObject.connectSlotsByName(Server)
-        be=Thread(target=self.backend, args=[lambda: threadMainPace, listaLabel], daemon=True)
+        self.scrolling_signal.connect(self.aggScroll) ### debug
+
+        be=Thread(target=self.backend, args=[lambda: threadMainPace, listaLabel], daemon=True) ###debug
         be.start()
 
     def retranslateUi(self, Server):
@@ -157,7 +84,7 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
         global listaDati
         listaDati=[]
         s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.bind(("192.168.5.212", 8282)) #indirizzo macchina
+        s.bind(("127.0.0.1", 8282)) #indirizzo macchina
         s.listen(10)
         while exit():
             try:
@@ -404,8 +331,15 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
                         print(e)
                         connClient.send("*****".encode())
                         mydb8.close()
-                aggLabel=Thread(target=self.aggScroll, args=[listaDati, listaLabel, arrDati])
-                aggLabel.start()
+
+                elif(int(cod[2]==9)): ### debug purposes
+                    print(cod)
+                    print("This is just a test for Raffa")
+                """ DEBUG """
+                # aggLabel=Thread(target=self.aggScroll, args=[listaDati, listaLabel, arrDati])
+                # aggLabel.start()
+                #self.aggScroll(listaDati, listaLabel, arrDati)
+                self.scrolling_signal.emit([listaLabel, cod]) ### debug
             except KeyboardInterrupt:
                 s.close()
                 print("server chiuso")
@@ -413,33 +347,34 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
             except Exception as e:
                 print(e) ### debug
                 pass
-
-    def aggScroll(self, listaDati, listaLabel, cod):
+    @QtCore.pyqtSlot(list)
+    def aggScroll(self, arguments):
+        listaLabel, cod = arguments
+        print(cod)
         try:
             global ind
-            print(ind) ### debug
             import datetime
             ora=datetime.datetime.now()
-            if ind>=19:
+            if ind==3:
                 listaDati.pop(0)
-                print(listaDati) ### debug
                 ind-=1
             istr=ora.strftime("%d-%m-%y")+" "+ora.strftime("%H-%M-%S")+" > "    #costruisco la stringa da appendere
             for el in cod:
                 istr += " | "+str(el)
-            listaDati.append(istr)                                                #appendo la stringa
-            QtWidgets.QLabel(self.scrollContent)
+            """ DEBUG purpuses"""
+            # listaDati.append(istr)                                                #appendo la stringa
+            # QtWidgets.QLabel(self.scrollContent)
             # for c in range(len(listaDati)):                                     #setto testo nelle label
             #     listaLabel[c].setText(listaDati[c])
-            ind+=1
+            # ind+=1
+            # listaLabel.append(QtWidgets.QLabel(self.scrollContent)) ### debug
+            # listaLabel[len(listaLabel)-1].setText(istr) ### debug
+            label = QtWidgets.QLabel(istr)
+            #self.scrollContent.layout().insertWidget(self.scrollContent.layout().count(), label)
+            self.scrollContent.layout().addWidget(label)
         except Exception as e:
             print(e)   ### debug
             pass
-
-    ### Lazza thing
-    def hello(self, content):
-        QtWidgets.QLabel(self.scrollContent).setText(content)
-        """ RESTART FROM HERE """
 
 if __name__ == "__main__":
     import sys
