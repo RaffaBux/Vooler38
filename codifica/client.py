@@ -109,7 +109,6 @@ class Ui_MainGUI(QtWidgets.QMainWindow):                            #classe main
         threadMainPace=True
         MainGUI.setObjectName("MainGUI")
         MainGUI.setWindowModality(QtCore.Qt.WindowModal)
-        self.showMaximized()
         MainGUI.setEnabled(True)
         font = QtGui.QFont()
         font.setStyleStrategy(QtGui.QFont.PreferAntialias)
@@ -117,10 +116,6 @@ class Ui_MainGUI(QtWidgets.QMainWindow):                            #classe main
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("2_grappoloicon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainGUI.setWindowIcon(icon)
-        MainGUI.setAutoFillBackground(True)
-        MainGUI.setStyleSheet("")
-        MainGUI.setAnimated(True)
-        MainGUI.setUnifiedTitleAndToolBarOnMac(True)
         self.centralwidget = QtWidgets.QWidget(MainGUI)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.centralwidget)
@@ -311,7 +306,7 @@ class Ui_MainGUI(QtWidgets.QMainWindow):                            #classe main
     def retranslateUiSec(self, MainGUI):
         _translate = QtCore.QCoreApplication.translate
         MainGUI.setWindowTitle(_translate("MainGUI", "MAPPA VASI VINARI"))
-        self.mappacantLabel.setText(_translate("MainGUI", "<html><head/><body><p><img src=\"3_Planimetria_Botti.png\"/></p></body></html>"))
+        self.mappacantLabel.setPixmap(QtGui.QPixmap("4_Planimetria_Botti.png"))
         self.vv16.setText(_translate("MainGUI", "v.v. 16"))
         self.locale2.setText(_translate("MainGUI", "LOCALE 2"))
         self.vv14.setText(_translate("MainGUI", "v.v. 14"))
