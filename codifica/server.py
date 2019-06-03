@@ -2,7 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Ui_ServerGUI(QtWidgets.QMainWindow):
 
-    scrolling_signal = QtCore.pyqtSignal([list]) ### debug
+    scrolling_signal = QtCore.pyqtSignal([list])
 
     def __init__(self):
         super(Ui_ServerGUI, self).__init__()
@@ -54,9 +54,6 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
         self.scrollContent.setObjectName("scrollContent")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.scrollContent)
         self.gridLayout_2.setObjectName("gridLayout_2")
-        ### I've cut some things
-        # self.gridLayout_2.addWidget(self.label19, 20, 0, 1, 1)
-        # listaLabel.append(self.label19)
         self.scrollArea.setWidget(self.scrollContent)
         self.verticalLayout.addWidget(self.scrollArea)
         self.gridLayout.addLayout(self.verticalLayout, 0, 1, 1, 1)
@@ -64,7 +61,6 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
         self.retranslateUi(Server)
         QtCore.QMetaObject.connectSlotsByName(Server)
         self.scrolling_signal.connect(self.aggScroll) ### debug
-
         be=Thread(target=self.backend, args=[lambda: threadMainPace, listaLabel], daemon=True) ###debug
         be.start()
 
@@ -79,12 +75,8 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
         from threading import Thread
         import socket
         import mysql.connector as mys
-        global ind
-        ind=1
-        global listaDati
-        listaDati=[]
         s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.bind(("127.0.0.1", 8282)) #indirizzo macchina
+        s.bind(("192.168.5.11", 8282)) #indirizzo macchina
         s.listen(10)
         while exit():
             try:
@@ -331,15 +323,8 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
                         print(e)
                         connClient.send("*****".encode())
                         mydb8.close()
-
-                elif(int(cod[2]==9)): ### debug purposes
-                    print(cod)
-                    print("This is just a test for Raffa")
-                """ DEBUG """
-                # aggLabel=Thread(target=self.aggScroll, args=[listaDati, listaLabel, arrDati])
-                # aggLabel.start()
-                #self.aggScroll(listaDati, listaLabel, arrDati)
-                self.scrolling_signal.emit([listaLabel, cod]) ### debug
+                labelAgg=Thread(target=self.scrolling_signal.emit, args=[arrDati], daemon=True)
+                labelAgg.start()
             except KeyboardInterrupt:
                 s.close()
                 print("server chiuso")
@@ -347,30 +332,17 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
             except Exception as e:
                 print(e) ### debug
                 pass
+    
     @QtCore.pyqtSlot(list)
-    def aggScroll(self, arguments):
-        listaLabel, cod = arguments
+    def aggScroll(self, cod):
         print(cod)
         try:
-            global ind
             import datetime
             ora=datetime.datetime.now()
-            if ind==3:
-                listaDati.pop(0)
-                ind-=1
-            istr=ora.strftime("%d-%m-%y")+" "+ora.strftime("%H-%M-%S")+" > "    #costruisco la stringa da appendere
+            istr=ora.strftime("%d/%m/%y")+" "+ora.strftime("%H:%M:%S")+" > "    #costruisco la stringa da appendere
             for el in cod:
                 istr += " | "+str(el)
-            """ DEBUG purpuses"""
-            # listaDati.append(istr)                                                #appendo la stringa
-            # QtWidgets.QLabel(self.scrollContent)
-            # for c in range(len(listaDati)):                                     #setto testo nelle label
-            #     listaLabel[c].setText(listaDati[c])
-            # ind+=1
-            # listaLabel.append(QtWidgets.QLabel(self.scrollContent)) ### debug
-            # listaLabel[len(listaLabel)-1].setText(istr) ### debug
             label = QtWidgets.QLabel(istr)
-            #self.scrollContent.layout().insertWidget(self.scrollContent.layout().count(), label)
             self.scrollContent.layout().addWidget(label)
         except Exception as e:
             print(e)   ### debug
