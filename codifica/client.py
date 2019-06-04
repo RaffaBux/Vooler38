@@ -75,7 +75,7 @@ class Ui_MainGUI(QtWidgets.QMainWindow):                            #classe main
         global userText, passwdText
         import socket
         client0=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client0.connect(("192.168.5.11",8282)) #indirizzo server
+        client0.connect(("192.168.5.212",8282)) #indirizzo server
         userText=self.usernameLine.text()
         passwdText=self.passwordLine.text()
         cred=userText+","+passwdText+",0"
@@ -97,12 +97,7 @@ class Ui_MainGUI(QtWidgets.QMainWindow):                            #classe main
             client0.close()
 
     def closeEvent(self, event):                                    #evento di chiusura della main window
-        try:
-            threadMainPace=False
-            threadSecondPace=False
-            app.closeAllWindows()
-        except:
-            pass
+        app.closeAllWindows()
 
     def setupUiSec(self, MainGUI):                                  #grafica di refresh post-login (lista)
         from threading import Thread
@@ -361,7 +356,7 @@ class Ui_MainGUI(QtWidgets.QMainWindow):                            #classe main
         while exit():
             try:
                 client1=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                client1.connect(("192.168.5.11",8282)) #indirizzo server 
+                client1.connect(("192.168.5.212",8282)) #indirizzo server 
                 client1.send(cred.encode())
                 risp=client1.recv(1024).decode()
                 self.tempestLabel.setText("Temperatura esterna: "+str(risp)+"°C")
@@ -392,14 +387,16 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
         self.setupUi(self, sendr)
 
     def closeEvent(self, event):                                    #evento di chiusura window b/l
-        threadSecondPace=False
+        quit_event.set()
 
     def setupUi(self, TempGUI, name):                               #grafica window b/l
-        from threading import Thread
-        threadSecondPace=False
-        TempGUI.setObjectName("TempGUI")
+        from threading import Thread, Event
+        global quit_event
+        quit_event = Event()
         TempGUI.resize(464, 387)
+        self.setWindowModality(QtCore.Qt.ApplicationModal)
         self.show()
+        TempGUI.setObjectName("TempGUI")
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("2_icon38.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         TempGUI.setWindowIcon(icon)
@@ -422,7 +419,7 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
         self.tempAttLabel1.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.tempAttLabel1.setObjectName("tempAttLabel1")
         self.gridLayout_2.addWidget(self.tempAttLabel1, 2, 1, 1, 1)
-        tempvin=Thread(target=self.tempRich, args=[self.tempAttLabel1, name, lambda: threadSecondPace], daemon=True)
+        tempvin=Thread(target=self.tempRich, args=[self.tempAttLabel1, name, quit_event], daemon=True)
         tempvin.start()
         self.celsiusLabel1 = QtWidgets.QLabel(self.temp_grid)
         self.celsiusLabel1.setObjectName("celsiusLabel1")
@@ -481,7 +478,7 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
             self.contenutoLabel2.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
             self.contenutoLabel2.setObjectName("contenutoLabel2")
             self.gridLayout_2.addWidget(self.contenutoLabel2, 1, 1, 1, 1)
-            contenuto=Thread(target=self.contVaso, args=[self.contenutoLabel2, name, lambda: threadSecondPace], daemon=True)
+            contenuto=Thread(target=self.contVaso, args=[self.contenutoLabel2, name, quit_event], daemon=True)
             contenuto.start()
         self.gridLayout_2.addLayout(self.horizontalLayout_2, 9, 0, 1, 1)
         self.confermaLabel = QtWidgets.QLabel(self.temp_grid)
@@ -493,7 +490,7 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
         self.statoscrLabel = QtWidgets.QLabel(self.temp_grid)
         self.statoscrLabel.setObjectName("statoscrLabel")
         self.horizontalLayout_3.addWidget(self.statoscrLabel)
-        stvalv=Thread(target=self.statoValv, args=[self.statoLabel, self.statoscrLabel, name, lambda: threadSecondPace], daemon=True)
+        stvalv=Thread(target=self.statoValv, args=[self.statoLabel, self.statoscrLabel, name, quit_event], daemon=True)
         stvalv.start()
         self.statoLabel = QtWidgets.QLabel(self.temp_grid)
         self.statoLabel.setObjectName("statoLabel")
@@ -521,15 +518,14 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
             self.contenutoLabel1.setText(_translate("TempGUI", "Contenuto '"+name+"':"))
             self.contenutoLabel2.setText(_translate("TempGUI", "*****"))
 
-    def statoValv(self, statoLabel, statoscrLabel, name, exitSec):    #funzione thread stato valvola
+    def statoValv(self, statoLabel, statoscrLabel, name, quit_event):    #funzione thread stato valvola
         import time as f
         import socket
         cod=userText+","+passwdText+",8,"+name
-        threadSecondPace=True
-        while exitSec():
+        while not quit_event.is_set():
             try:
                 client8=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                client8.connect(("192.168.5.11",8282)) #!!!!!!
+                client8.connect(("192.168.5.212",8282)) #!!!!!!
                 client8.send(cod.encode())
                 risp=client8.recv(1024).decode()
                 client8.close()
@@ -548,17 +544,15 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
                 print(e)
                 self.statoscrLabel.setText("*****")
                 client8.close()
-            f.sleep(20)
 
-    def tempRich(self, tempAttLabel1, name, exitSec):                 #funzione thread temperatura b/l
+    def tempRich(self, tempAttLabel1, name, quit_event):                 #funzione thread temperatura b/l
         import time as b
         import socket
         cod=userText+","+passwdText+",2,"+name
-        threadSecondPace=True
-        while exitSec():
+        while not quit_event.is_set():
             try:
                 client2=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                client2.connect(("192.168.5.11",8282)) #!!!!!!
+                client2.connect(("192.168.5.212",8282)) #!!!!!!
                 client2.send(cod.encode())
                 risp=client2.recv(1024).decode()
                 self.tempAttLabel1.setText(str(risp))
@@ -568,34 +562,32 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
             except:
                 self.tempAttLabel1.setText("*****")
                 client2.close()
-            b.sleep(10)
         
-    def contVaso(self, contenutoLabel2, name, exitSec):               #funzione thread contenuto botte
+    def contVaso(self, contenutoLabel2, name, quit_event):               #funzione thread contenuto botte
         import time as d
         import socket
         cod=userText+","+passwdText+",3,"+name
-        threadSecondPace=True
-        while exitSec():
+        while not quit_event.is_set():
             try:
                 client3=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                client3.connect(("192.168.5.11",8282)) #!!!!!!
+                client3.connect(("192.168.5.212",8282)) #!!!!!!
                 client3.send(cod.encode())
                 risp=client3.recv(1024).decode()
                 self.contenutoLabel2.setText(str(risp))
                 client3.close()
             except RuntimeError:
                 pass
-            except:
+            except Exception as e:
                 self.contenutoLabel2.setText("*****")
+                print(e)
                 client3.close()
-            d.sleep(10)
 
     def setDef(self, tempSpin, name):                               #funzione set default value spinbox
         import socket
         cod=userText+","+passwdText+",4,"+name
         try:
             client4=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            client4.connect(("192.168.5.11",8282)) #!!!!!!
+            client4.connect(("192.168.5.212",8282)) #!!!!!!
             client4.send(cod.encode())
             risp=client4.recv(1024).decode()
             self.tempSpin.setValue(float(risp))
@@ -612,7 +604,7 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
         cod=userText+","+passwdText+",5,"+name+","+str(valore)
         try:
             client5=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            client5.connect(("192.168.5.11",8282)) #!!!!!!
+            client5.connect(("192.168.5.212",8282)) #!!!!!!
             client5.send(cod.encode())
             risp=client5.recv(1024).decode()
             self.confermaLabel.setText(str(risp))
@@ -641,7 +633,7 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
             import matplotlib.dates as dt
             import dateutil
             client6=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            client6.connect(("192.168.5.11",8282)) #!!!!!!
+            client6.connect(("192.168.5.212",8282)) #!!!!!!
             client6.send(cod.encode())
             risp=client6.recv(1024).decode()
             client6.close()
@@ -680,7 +672,7 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
             import matplotlib.dates as dt
             import dateutil
             client7=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            client7.connect(("192.168.5.11",8282)) #!!!!!!
+            client7.connect(("192.168.5.212",8282)) #!!!!!!
             client7.send(cod.encode())
             risp=client7.recv(1024).decode()
             client7.close()
