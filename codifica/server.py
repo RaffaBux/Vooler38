@@ -76,7 +76,7 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
         import socket
         import mysql.connector as mys
         s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.bind(("192.168.5.11", 8282)) #indirizzo macchina
+        s.bind(("192.168.5.212", 8282)) #indirizzo macchina
         s.listen(10)
         while exit():
             try:
@@ -85,7 +85,6 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
                 cod=cred.split(",")
                 arrDati=cod
                 if int(cod[2])==0:      #login
-                    print(cod)
                     try:
                         mydb0=mys.connect(host="192.168.5.33", user="root", passwd="quinta", database="Login")  #credenziali mysql
                         myc0=mydb0.cursor()
@@ -101,7 +100,6 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
                         connClient.send("credenziali_errate".encode())
                         mydb0.close()
                 elif int(cod[2])==1:    #temperatura esterna
-                    print(cod)
                     try:
                         mydb1=mys.connect(host="192.168.5.33", user="root", passwd="quinta", database="Esterno")   #credenziali mysql
                         myc1=mydb1.cursor()
@@ -114,7 +112,6 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
                         connClient.send("*****".encode())
                         mydb1.close()
                 elif int(cod[2])==2:    #temperature botti e locali e controllo sonda
-                    print(cod)
                     cod=str(cod[3]).split(" ")
                     try:
                         mydb2=mys.connect(host="192.168.5.33", user="root", passwd="quinta", database="Cantina") #credenziali mysql
@@ -143,7 +140,6 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
                         connClient.send("*****".encode())
                         mydb2.close()
                 elif int(cod[2])==3:    #contenuto
-                    print(cod)
                     cod=str(cod[3]).split(" ")
                     try:
                         mydb3=mys.connect(host="192.168.5.33", user="root", passwd="quinta", database="Cantina") #credenziali mysql
@@ -158,7 +154,6 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
                         connClient.send("*****".encode())
                         mydb3.close()
                 elif int(cod[2])==4:    #reset spin
-                    print(cod)
                     cod=str(cod[3]).split(" ")
                     try:
                         if cod[0]=="Vaso":
@@ -180,7 +175,6 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
                         connClient.send("16.0".encode())
                         mydb4.close()
                 elif int(cod[2])==5:    #conferma spin
-                    print(cod)
                     valore=cod[4]
                     cod=str(cod[3]).split(" ")
                     try:
@@ -209,7 +203,6 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
                         connClient.send("errore aggiornamento".encode())
                         mydb5.close()
                 elif int(cod[2])==6:    #grafico monitoraggio temperature
-                    print(cod)
                     misure=""
                     quando=""
                     dati=""
@@ -258,7 +251,6 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
                         connClient.send("errore invio dati".encode())
                         mydb6.close()
                 elif int(cod[2])==7:    #grafico monitoraggio quantità
-                    print(cod)
                     misure=""
                     quando=""
                     dati=""
@@ -299,7 +291,6 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
                         connClient.send("errore invio dati".encode())
                         mydb7.close()
                 elif int(cod[2])==8:    #controllo avarie valvole
-                    print(cod)
                     cod=str(cod[3]).split(" ")
                     try:
                         mydb8=mys.connect(host="192.168.5.33", user="root", passwd="quinta", database="Cantina") #credenziali mysql
@@ -335,7 +326,7 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
     
     @QtCore.pyqtSlot(list)
     def aggScroll(self, cod):
-        print(cod)
+        print(cod) #Keep this as the only printing mechanism
         try:
             import datetime
             ora=datetime.datetime.now()
