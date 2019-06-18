@@ -60,8 +60,8 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
         Server.setCentralWidget(self.centralwidget)
         self.retranslateUi(Server)
         QtCore.QMetaObject.connectSlotsByName(Server)
-        self.scrolling_signal.connect(self.aggScroll) ### debug
-        be=Thread(target=self.backend, args=[lambda: threadMainPace, listaLabel], daemon=True) ###debug
+        self.scrolling_signal.connect(self.aggScroll)
+        be=Thread(target=self.backend, args=[lambda: threadMainPace, listaLabel], daemon=True)
         be.start()
 
     def retranslateUi(self, Server):
@@ -71,15 +71,33 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
         self.statoLabel.setText(_translate("Server", "***"))
         self.imgLabel.setText(_translate("Server", "<html><head/><body><p><img src=\"gray.png\"/></p></body></html>"))
 
+    def imgServer(self, imgLabel, stato, exit):
+        while exit():
+            try:
+                if stato==0:
+                    self.imgLabel.setText("<html><head/><body><p><img src=\"gray.png\"/></p></body></html>")
+                    self.statoLabel.setText("Inattivo")
+                elif stato==1:
+                    self.imgLabel.setText("<html><head/><body><p><img src=\"green.png\"/></p></body></html>")
+                    self.statoLabel.setText("Attivo")
+                else:
+                    self.imgLabel.setText("<html><head/><body><p><img src=\"red.png\"/></p></body></html>")
+                    self.statoLabel.setText("Avaria")
+            except Exception as e:
+                print(e)    ###debug
+
     def backend(self, exit, listaLabel):
         from threading import Thread
         import socket
         import mysql.connector as mys
+        stato=0
         s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.bind(("192.168.5.212", 8282)) #indirizzo macchina
         s.listen(10)
         while exit():
             try:
+                statoServer=Thread(target=self.imgServer, args=[self.imgLabel, stato], daemon=True)
+                statoServer.start()
                 connClient, ipClient = s.accept()
                 cred=connClient.recv(1024).decode() #0 username, 1 password, 2 codIstruzione, 3&&+ info aggiuntive
                 cod=cred.split(",")
@@ -316,12 +334,9 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
                         mydb8.close()
                 labelAgg=Thread(target=self.scrolling_signal.emit, args=[arrDati], daemon=True)
                 labelAgg.start()
-            except KeyboardInterrupt:
-                s.close()
-                print("server chiuso")
-                break
+                stato=1
             except Exception as e:
-                print(e) ### debug
+                stato=2
                 pass
     
     @QtCore.pyqtSlot(list)
@@ -336,7 +351,7 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
             label = QtWidgets.QLabel(istr)
             self.scrollContent.layout().addWidget(label)
         except Exception as e:
-            print(e)   ### debug
+            print(e)
             pass
 
 if __name__ == "__main__":
