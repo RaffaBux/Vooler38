@@ -5,10 +5,11 @@ class Ui_MainGUI(QtWidgets.QMainWindow):                            #classe main
     def __init__(self):
         super(Ui_MainGUI, self).__init__()
         self.setupUi(self)
-        self.showMaximized()
+        self.show()                 #Maximized()
 
     def setupUi(self, MainGUI):                                     #grafica login
         MainGUI.setObjectName("MainGUI")
+        MainGUI.resize(400,500)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("2_icon38.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainGUI.setWindowIcon(icon)
@@ -75,7 +76,7 @@ class Ui_MainGUI(QtWidgets.QMainWindow):                            #classe main
         global userText, passwdText
         import socket
         client0=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client0.connect(("192.168.3.3",8282)) #indirizzo server
+        client0.connect(("192.168.0.3",8282)) #indirizzo server
         userText=self.usernameLine.text()
         passwdText=self.passwordLine.text()
         cred=userText+","+passwdText+",0"
@@ -103,6 +104,7 @@ class Ui_MainGUI(QtWidgets.QMainWindow):                            #classe main
         from threading import Thread
         threadMainPace=True
         MainGUI.setObjectName("MainGUI")
+        MainGUI.resize(400,500)
         MainGUI.setWindowModality(QtCore.Qt.WindowModal)
         MainGUI.setEnabled(True)
         font = QtGui.QFont()
@@ -356,7 +358,7 @@ class Ui_MainGUI(QtWidgets.QMainWindow):                            #classe main
         while exit():
             try:
                 client1=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                client1.connect(("192.168.3.3",8282)) #indirizzo server 
+                client1.connect(("192.168.0.3",8282)) #indirizzo server 
                 client1.send(cred.encode())
                 risp=client1.recv(1024).decode()
                 self.tempestLabel.setText("Temperatura esterna: "+str(risp)+"°C")
@@ -438,11 +440,10 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
         self.tempSpin.setAccelerated(False)
         self.tempSpin.setKeyboardTracking(True)
         self.tempSpin.setPrefix("")
-        self.tempSpin.setDecimals(1)
-        self.tempSpin.setMinimum(5.0)
-        self.tempSpin.setMaximum(30.0)
-        self.tempSpin.setSingleStep(0.1)
-        self.tempSpin.setProperty("value", 16.0)
+        self.tempSpin.setMinimum(5)
+        self.tempSpin.setMaximum(30)
+        self.tempSpin.setSingleStep(1)
+        self.tempSpin.setProperty("value", 1)
         self.setDef(self.tempSpin, name)
         self.tempSpin.setObjectName("tempSpin")
         self.gridLayout_2.addWidget(self.tempSpin, 3, 1, 1, 1)
@@ -525,7 +526,7 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
         while not quit_event.is_set():
             try:
                 client8=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                client8.connect(("192.168.3.3",8282)) #!!!!!!
+                client8.connect(("192.168.0.3",8282)) #!!!!!!
                 client8.send(cod.encode())
                 risp=client8.recv(1024).decode()
                 client8.close()
@@ -552,7 +553,7 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
         while not quit_event.is_set():
             try:
                 client2=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                client2.connect(("192.168.3.3",8282)) #!!!!!!
+                client2.connect(("192.168.0.3",8282)) #!!!!!!
                 client2.send(cod.encode())
                 risp=client2.recv(1024).decode()
                 self.tempAttLabel1.setText(str(risp))
@@ -570,7 +571,7 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
         while not quit_event.is_set():
             try:
                 client3=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                client3.connect(("192.168.3.3",8282)) #!!!!!!
+                client3.connect(("192.168.0.3",8282)) #!!!!!!
                 client3.send(cod.encode())
                 risp=client3.recv(1024).decode()
                 self.contenutoLabel2.setText(str(risp))
@@ -587,7 +588,7 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
         cod=userText+","+passwdText+",4,"+name
         try:
             client4=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            client4.connect(("192.168.3.3",8282)) #!!!!!!
+            client4.connect(("192.168.0.3",8282)) #!!!!!!
             client4.send(cod.encode())
             risp=client4.recv(1024).decode()
             self.tempSpin.setValue(float(risp))
@@ -604,7 +605,7 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
         cod=userText+","+passwdText+",5,"+name+","+str(valore)
         try:
             client5=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            client5.connect(("192.168.3.3",8282)) #!!!!!!
+            client5.connect(("192.168.0.3",8282)) #!!!!!!
             client5.send(cod.encode())
             risp=client5.recv(1024).decode()
             self.confermaLabel.setText(str(risp))
@@ -633,7 +634,7 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
             import matplotlib.dates as dt
             import dateutil
             client6=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            client6.connect(("192.168.3.3",8282)) #!!!!!!
+            client6.connect(("192.168.0.3",8282)) #!!!!!!
             client6.send(cod.encode())
             risp=client6.recv(1024).decode()
             client6.close()
@@ -672,7 +673,7 @@ class Ui_TempGUI(QtWidgets.QMainWindow):
             import matplotlib.dates as dt
             import dateutil
             client7=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            client7.connect(("192.168.3.3",8282)) #!!!!!!
+            client7.connect(("192.168.0.3",8282)) #!!!!!!
             client7.send(cod.encode())
             risp=client7.recv(1024).decode()
             client7.close()
