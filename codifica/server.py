@@ -87,16 +87,70 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
             except Exception as e:
                 print(e)    ###debug
 
+    def acqFunct(self, exit):
+        import mysql.connector as mys
+        import serial
+        import time
+        arduino = serial.Serial('COM18', 115200, timeout=0)
+        while exit():
+            dati=arduino.readline()
+            if dati:
+                try:
+                    datiDec = dati.decode('utf-8')
+                    print(datiDec) #debug
+                    valore=datiDec.split(";")          #1[0] = master, nomeslave[1],nomesonda[2];statosonda[3];nomevalvola[4];statovalvola[5];statovalvolaaperta[6] (3[6] = avaria/2[6] = spina staccata); temperatura[7]; 1[8] = anomalia/0[8] = normale;
+                    mydb9=mys.connect(host="localhost", user="vignaiolo", passwd="vigna38", database="Cantina")
+                    myc9=mydb9.cursor()
+                    myc9.execute("select idSondaV,statoS,statoV,funzV from Sonda where idBotte=14")  #esempio esame
+                    record=myc9.fetchone()
+                    if str(record[1])!=str(valore[3]):
+                        flagStatoS = 1
+                    else:
+                        flagStatoS = 0
+                    if str(record[2])!=str(valore[5]):
+                        flagStatoV = 1
+                    else:
+                        flagStatoV = 0
+                    if str(record[3])!=str(valore[6]):
+                        flagFunzionamentoV = 1
+                    else:
+                        flagFunzionamentoV = 0
+                    myc9.execute("insert into StoricoSonda(dataAggS,statoAggS,flagStatoS,statoAggV,flagStatoV,funzAggV,flagFunzionamentoV,idSondaV)values(now(),"+str(record[1])+","+str(flagStatoS)+","+str(record[2])+","+str(flagStatoV)+","+str(record[3])+","+str(flagFunzionamentoV)+","+str(record[0])+")")
+                    myc9.execute("update Sonda set statoS="+str(valore[3])+", statoV="+str(valore[5])+", funzV="+str(valore[6])+" where idSondaV="+str(valore[2]))
+                    myc9.execute("select idBotte,contenuto,tempBotte,tempsetBotte,volume from Botte where idBotte=14")  #esempio esame
+                    record=myc9.fetchone()
+                    myc9.execute("insert into StoricoBotte(dataAggB,contenutoAggB,tempAggB,tempsetAggB,volumeAggB,idBotte,flagContenuto,flagTemperatura,flagTemperaturaSet,flagVolume)values(now(),'"+str(record[1])+"',"+str(record[2])+","+str(record[3])+","+str(record[4])+","+str(record[0])+",0,1,0,0)")
+                    myc9.execute("update Botte set tempbotte="+str(valore[7])+" where idBotte="+str(valore[2]))
+                    mydb9.commit()
+                except Exception as e:
+                    print(e)
+                
+    def confFunc(self, valore):
+        import serial
+        import time
+        try:
+            val = valore.split(".")
+            arduino = serial.Serial('COM18', 115200, timeout=0)
+            arduino.write(val[0].encode())
+            dati=arduino.readline()
+            print(dati.decode('utf-8'))
+            arduino.close()
+        except Exception as e:
+            arduino.close()
+
     def backend(self, exit, listaLabel):
         from threading import Thread
         import socket
         import mysql.connector as mys
+        import serial
         stato=0
         s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.bind(("192.168.3.3", 8282)) #indirizzo macchina
+        s.bind(("192.168.0.3", 8282)) #indirizzo macchina
         s.listen(10)
+        acquisizione = Thread(target=self.acqFunct, args = [exit], daemon = True)
+        acquisizione.start()
         while exit():
-            try:
+            try:                 
                 statoServer=Thread(target=self.imgServer, args=[self.imgLabel, stato, exit], daemon=True)
                 statoServer.start()
                 connClient, ipClient = s.accept()
@@ -105,7 +159,7 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
                 arrDati=cod
                 if int(cod[2])==0:      #login
                     try:
-                        mydb0=mys.connect(host="localhost", user="vinaiolo", passwd="vigna38", database="Login")  #credenziali mysql
+                        mydb0=mys.connect(host="localhost", user="vignaiolo", passwd="vigna38", database="Login")  #credenziali mysql
                         myc0=mydb0.cursor()
                         myc0.execute("select username,password from Utente where username='"+str(cod[0])+"' and password='"+str(cod[1])+"'")
                         record=myc0.fetchone()
@@ -114,13 +168,12 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
                         else:
                             connClient.send("credenziali_errate".encode())
                         mydb0.close()
-                    except Exception as e:
-                        print(e)
+                    except:
                         connClient.send("credenziali_errate".encode())
                         mydb0.close()
                 elif int(cod[2])==1:    #temperatura esterna
                     try:
-                        mydb1=mys.connect(host="localhost", user="vinaiolo", passwd="vigna38", database="Esterno")   #credenziali mysql
+                        mydb1=mys.connect(host="localhost", user="vignaiolo", passwd="vigna38", database="Esterno")   #credenziali mysql
                         myc1=mydb1.cursor()
                         myc1.execute("select tempEsterno from Esterno where idEsterno=1")
                         record=myc1.fetchone()
@@ -133,7 +186,7 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
                 elif int(cod[2])==2:    #temperature botti e locali e controllo sonda
                     cod=str(cod[3]).split(" ")
                     try:
-                        mydb2=mys.connect(host="localhost", user="vinaiolo", passwd="vigna38", database="Cantina") #credenziali mysql
+                        mydb2=mys.connect(host="localhost", user="vignaiolo", passwd="vigna38", database="Cantina") #credenziali mysql
                         myc2=mydb2.cursor()
                         if cod[0]=="Vaso":
                             myc2.execute("select statoS from Sonda where idBotte="+str(cod[2]))
@@ -161,7 +214,7 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
                 elif int(cod[2])==3:    #contenuto
                     cod=str(cod[3]).split(" ")
                     try:
-                        mydb3=mys.connect(host="localhost", user="vinaiolo", passwd="vigna38", database="Cantina") #credenziali mysql
+                        mydb3=mys.connect(host="localhost", user="vignaiolo", passwd="vigna38", database="Cantina") #credenziali mysql
                         myc3=mydb3.cursor()
                         myc3.execute("select contenuto from Botte where idBotte="+str(cod[2]))
                         record=myc3.fetchone()
@@ -176,13 +229,13 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
                     cod=str(cod[3]).split(" ")
                     try:
                         if cod[0]=="Vaso":
-                            mydb4=mys.connect(host="localhost", user="vinaiolo", passwd="vigna38", database="Cantina") #credenziali mysql
+                            mydb4=mys.connect(host="localhost", user="vignaiolo", passwd="vigna38", database="Cantina") #credenziali mysql
                             myc4=mydb4.cursor()
                             myc4.execute("select tempsetBotte from Botte where idBotte="+str(cod[2]))
                             record=myc4.fetchone()
                             connClient.send(str(record[0]).encode())
                         else:
-                            mydb4=mys.connect(host="localhost", user="vinaiolo", passwd="vigna38", database="Cantina") #credenziali mysql
+                            mydb4=mys.connect(host="localhost", user="vignaiolo", passwd="vigna38", database="Cantina") #credenziali mysql
                             myc4=mydb4.cursor()
                             myc4.execute("select tempsetLocale from Locale where idLocale="+str(cod[1]))
                             record=myc4.fetchone()
@@ -194,11 +247,11 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
                         connClient.send("16.0".encode())
                         mydb4.close()
                 elif int(cod[2])==5:    #conferma spin
-                    valore=cod[4]
-                    cod=str(cod[3]).split(" ")
                     try:
+                        valore=cod[4]
+                        cod=str(cod[3]).split(" ")
                         if cod[0]=="Vaso":
-                            mydb5=mys.connect(host="localhost", user="vinaiolo", passwd="vigna38", database="Cantina") #credenziali mysql
+                            mydb5=mys.connect(host="localhost", user="vignaiolo", passwd="vigna38", database="Cantina") #credenziali mysql
                             myc5=mydb5.cursor()
                             myc5.execute("select idBotte,contenuto,tempBotte,tempsetBotte,volume from Botte where idBotte="+str(cod[2]))
                             record=myc5.fetchone()
@@ -206,13 +259,15 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
                             myc5.execute("update Botte set tempsetBotte="+str(valore)+" where idBotte="+str(cod[2]))
                             mydb5.commit()
                         else:
-                            mydb5=mys.connect(host="localhost", user="vinaiolo", passwd="vigna38", database="Cantina") #credenziali mysql
+                            mydb5=mys.connect(host="localhost", user="vignaiolo", passwd="vigna38", database="Cantina") #credenziali mysql
                             myc5=mydb5.cursor()
                             myc5.execute("select idLocale,tempLocale,tempsetLocale from Locale where idLocale="+str(cod[1]))
                             record=myc5.fetchone()
                             myc5.execute("insert into StoricoLocale(dataAggL,tempAggL,tempsetAggL,idLocale,flagTemperatura,flagTemperaturaSet)values(now(),"+str(record[1])+","+str(record[2])+","+str(record[0])+",0,1)")
                             myc5.execute("update Locale set tempsetLocale="+str(valore)+" where idLocale="+str(cod[1]))
                             mydb5.commit()
+                        #conferma=Thread(target=self.confFunc, args=[valore], daemon=True)
+                        #conferma.start()
                         connClient.send("temperatura aggiornata".encode())
                     except BrokenPipeError:
                         mydb5.close()
@@ -228,14 +283,14 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
                     cod=str(cod[3]).split(" ")
                     try:
                         if cod[0]=="Vaso":
-                            mydb6=mys.connect(host="localhost", user="vinaiolo", passwd="vigna38", database="Cantina") #credenziali mysql
+                            mydb6=mys.connect(host="localhost", user="vignaiolo", passwd="vigna38", database="Cantina") #credenziali mysql
                             myc6=mydb6.cursor()
                             myc6.execute("select tempAggB from StoricoBotte where idBotte="+str(cod[2])+" order by dataAggB desc limit 10")
                             recordTemp=myc6.fetchall()
                             myc6.execute("select dataAggB from StoricoBotte where idBotte="+str(cod[2])+" order by dataAggB desc limit 10")
                             recordDate=myc6.fetchall()
                         else:
-                            mydb6=mys.connect(host="localhost", user="vinaiolo", passwd="vigna38", database="Cantina") #credenziali mysql
+                            mydb6=mys.connect(host="localhost", user="vignaiolo", passwd="vigna38", database="Cantina") #credenziali mysql
                             myc6=mydb6.cursor()
                             myc6.execute("select tempAggL from StoricoLocale where idLocale="+str(cod[1])+" order by dataAggL desc limit 10")
                             recordTemp=myc6.fetchall()
@@ -276,7 +331,7 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
                     c=0
                     cod=str(cod[3]).split(" ")
                     try:
-                        mydb7=mys.connect(host="localhost", user="vinaiolo", passwd="vigna38", database="Cantina") #credenziali mysql
+                        mydb7=mys.connect(host="localhost", user="vignaiolo", passwd="vigna38", database="Cantina") #credenziali mysql
                         myc7=mydb7.cursor()
                         myc7.execute("select volumeAggB from StoricoBotte where idBotte="+str(cod[2])+" and flagVolume=1 order by dataAggB desc limit 10")
                         recordQuant=myc7.fetchall()
@@ -312,20 +367,20 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
                 elif int(cod[2])==8:    #controllo avarie valvole
                     cod=str(cod[3]).split(" ")
                     try:
-                        mydb8=mys.connect(host="localhost", user="vinaiolo", passwd="vigna38", database="Cantina") #credenziali mysql
+                        mydb8=mys.connect(host="localhost", user="vignaiolo", passwd="vigna38", database="Cantina") #credenziali mysql
                         myc8=mydb8.cursor()
                         if cod[0]=="Vaso":
                             myc8.execute("select statoV, funzV from Sonda,Botte where Sonda.idSondaV=Botte.idSondaV and Sonda.idBotte="+str(cod[2]))
                         else:
                             myc8.execute("select statoV, funzV from Sonda,Locale where Sonda.idSondaV=Locale.idSondaV and Sonda.idLocale="+str(cod[1]))
                         record=myc8.fetchone()
-                        if record[0]==0 and record[1]==0:
+                        if record[0]==0 and record[1]==0 or record[1]==2:
                             connClient.send("disinserita".encode())
-                        elif record[0]==0 and record[1]==1:
+                        elif record[0]==0 and record[1]==1 or record[1]==3:
                             connClient.send("avaria".encode())
-                        elif record[0]==1 and record[1]==0:
+                        elif record[0]==1 and record[1]==0 or record[1]==0:
                             connClient.send("off".encode())
-                        elif record[0]==1 and record[1]==1:
+                        elif record[0]==1 and record[1]==1 or record[1]==1:
                             connClient.send("on".encode())
                     except BrokenPipeError:
                         mydb8.close()
@@ -336,13 +391,13 @@ class Ui_ServerGUI(QtWidgets.QMainWindow):
                 labelAgg=Thread(target=self.scrolling_signal.emit, args=[arrDati], daemon=True)
                 labelAgg.start()
                 stato=1
-            except Exception as e:
+            except:
                 stato=2
                 pass
     
     @QtCore.pyqtSlot(list)
     def aggScroll(self, cod):
-        print(cod) #Keep this as the only printing mechanism
+        #print(cod) #debug
         try:
             import datetime
             ora=datetime.datetime.now()
