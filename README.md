@@ -6,9 +6,11 @@ Vigna38ValvesApp was developed in 2018/2019 as my high school graduation project
 
 The project is based on a clients-server achitecture were, ideally, the server is a PC internal to the winary and the clients are all the arduino devices (one for each wine tank). The point of the project is to cool down specific tanks where the wine temparature is higher than a value chosen by the winemaker (my dad, hello dad!). This value depends mainly from the external temperature and some other enviromental factors. When the tank temperature exceed the target value the server sends a signal to the tank's Arduino that opens the corrispondent valve so a chilled liquid, that flows through an isolated hydaulic system, can absorb all the wine extra energy (physics here eheheh). In the same way, when the tank temperature is cold, the valve is closed.
 
-  ![](assets/git/projectArchitecture.png)
-  ![](assets/git/valveOpened.png)
-  ![](assets/git/valveClosed.png)
+<div align="center">
+  <img src="https://github.com/RaffaBux/Vigna38ValvesApp/tree/master/assets/git/projectArchitecture.png" style="width=50%" />
+  <img src="https://github.com/RaffaBux/Vigna38ValvesApp/tree/master/assets/git/valveOpened.png" style="width=50%" />
+  <img src="https://github.com/RaffaBux/Vigna38ValvesApp/tree/master/assets/git/valveClosed.png" style="width=50%" />
+</div>
 
 ### To get ready run
 
