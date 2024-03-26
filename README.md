@@ -13,8 +13,7 @@ The project is based on a clients-server achitecture were, ideally, the server i
 </div>
 
 
-|![](/assets/git/projectArchitecture.png)|
-|:-:|
+![](/assets/git/projectArchitecture.png)
 |![](/assets/git/valveOpened.png)|![](/assets/git/valveClosed.png)|
 |:-:|:-:|
 
