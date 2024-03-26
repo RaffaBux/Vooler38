@@ -12,6 +12,12 @@ The project is based on a clients-server achitecture were, ideally, the server i
   <img src="https://github.com/RaffaBux/Vigna38ValvesApp/tree/master/assets/git/valveClosed.png" style="width=50%" />
 </div>
 
+
+|![](/assets/git/projectArchitecture.png)|
+|:-:|
+|![](/assets/git/valveOpened.png)|![](/assets/git/valveClosed.png)|
+|:-:|:-:|
+
 ### To get ready run
 
 ```
