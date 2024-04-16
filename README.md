@@ -27,4 +27,4 @@ pip3 install matplotlib
 ### FAQ
 
 * Why did you not use Raspberry (or other programmable boards) as client to improve the routing and communications rate?
--> All I had was a laptop, an Arduino, an analog temperature sensor, a Raspberry, a breadboard and some wires. I didn't want to spend more money than I had already spent so i adapted to the situation and used all my items in the best way i tought. If i had to do this again i would clearly use other more efficent tools.
+Well, all I owned was a laptop, an Arduino, an analog temperature sensor, a Raspberry, a breadboard and some wires. I didn't want to spend more money than I had already spent so i adapted to the situation and used all my items in the best way i tought. If i had to do this again i would clearly use other more efficent tools.
