@@ -1,6 +1,6 @@
-# Vigna38ValvesApp
+# Vooler38
 
-Vigna38ValvesApp was developed in 2018/2019 as my high school graduation project. As well as earning the maximum score at the last test (😏), this project was finalized to help my parents' winery cooling system making it semi-automized and reachable from an internal desktop app and smartphone devices.
+Vooler38 was born in 2018 as my high school graduation project. As well as earning the maximum score at the last test (😏), Vooler was finalized to help my parents' winery cooling system making it semi-automized and reachable from an internal desktop app and smartphone devices.
 
 ## How does it work
 
